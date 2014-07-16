@@ -3,9 +3,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET /user_profile
   def user_profile
     user  = User.find( params[:id])
-    if stale?(:etag => "user_profile_"+user.id, :last_modified => user.updated_at, :public => true)
-      render json: user, serializer: UserProfileSerializer
-    end
+    render json: user, serializer: UserProfileSerializer
   rescue => e
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
@@ -13,9 +11,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET '/users/id'
   def show
     user  = current_user
-    if stale?(:etag => "current_user_profile_"+user.id, :last_modified => user.updated_at, :public => true)
-      render :json => user
-    end
+    render :json => user
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
