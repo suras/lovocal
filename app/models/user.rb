@@ -16,7 +16,7 @@ class User
   field :image,                      type: String
   field :encrypted_phone_id,         type: String
   field :auth_token,                 type: String
-  field :is_verified_by_mobile,      type: Boolean, default: false
+  field :is_verified_by_sms,      type: Boolean, default: false
   field :sms_serial_key,             type: String, default: ""
   field :encrypted_password,         type: String, default: ""
 
@@ -64,7 +64,9 @@ class User
   end
 
   def mobile_verification_serial
-    self.sms_serial_key = SecureRandom.random_number(88888888)
+    if sms_serial_key.blank?
+      self.sms_serial_key = SecureRandom.random_number(88888888)
+    end
   end
 
   def ensure_password

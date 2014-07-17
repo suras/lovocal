@@ -10,4 +10,12 @@ class UserSerializer < ActiveModel::Serializer
   	object.id.to_s
   end
 
+  def auth_token
+  	if(object.is_verified_by_sms?)
+      object.auth_token
+    else
+      ""
+    end
+  end
+
 end

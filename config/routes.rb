@@ -8,9 +8,7 @@ Rails.application.routes.draw do
       resources :users
       post '/login', to: "users#login"
       get  '/current_user_profile', to: "users#current_user_profile"
-    
-
-
+      post '/verify_sms_key', to: "users#verify_sms_key"
     end
   end
 

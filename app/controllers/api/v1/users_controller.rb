@@ -28,11 +28,23 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
+ 
+  # POST /verify_sms_key 
+  def verify_sms_key
+    @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key]).first
+    if(@user.present?)
+      @user.is_verified_by_sms = true
+      @user.save
+      render json: {auth_token: @user.auth_token} 
+    else
+      render json: {auth_token: ""}, status: Code[:status_error]
+    end
+  end
 
   # POST '/login'
   def login
-    if(params[:user][:phone_id].present? && params[:user][:serial_key].present?)
-      @user = User.where(encrypted_phone_id: params[:user][:phone_id], sms_serial_key: params[:user][:sms_serial_key])
+    @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key])
+    if(@user.present?)  
       render json: @user
     else
       render json: {error_code: Code[:error_rescue], error_message: "User Not Present"}, status: Code[:status_error]
