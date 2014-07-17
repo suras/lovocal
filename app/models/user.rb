@@ -44,8 +44,7 @@ class User
   # field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
-  mount_uploader :image, ProfileImageUploader
-
+  
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_validation :ensure_password
   
@@ -56,6 +55,7 @@ class User
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
   validates :first_name, :encrypted_phone_id, presence: true
 
+  mount_uploader :image, ProfileImageUploader
   
   def ensure_authentication_token
     if auth_token.blank?

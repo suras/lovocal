@@ -54,6 +54,9 @@ gem 'rails-api'
 
 gem 'kaminari'
 
+gem 'mongoid-tree', :require => 'mongoid/tree'
+
+
 group :development, :test do
   gem 'spring-commands-rspec'
   gem 'rspec-rails'
