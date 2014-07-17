@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-
+ruby '2.1.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
 # Use SCSS for stylesheets
@@ -55,6 +55,14 @@ gem 'rails-api'
 gem 'kaminari'
 
 gem 'mongoid-tree', :require => 'mongoid/tree'
+
+gem 'capistrano', '~> 3.0.0'
+
+gem 'capistrano-bundler', '~> 1.0.0'
+
+gem 'capistrano-rails', '~> 1.0.0'
+
+gem 'capistrano-rvm'
 
 
 group :development, :test do
