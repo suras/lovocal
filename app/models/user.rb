@@ -8,17 +8,17 @@ class User
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
-  field :email,                type: String, default: ""
-  field :first_name,           type: String
-  field :last_name,            type: String
-  field :description,          type: String
-  field :mobile_number,        type: String, default: ""
-  field :image,                type: String
-  field :encrypted_phone_id,   type: String
-  field :auth_token,           type: String
-  field :is_verified_by_mobile type: Boolean, default: false
-  field :mobile_verfication_serial type: String, default: ""
-  # field :encrypted_password, type: String, default: ""
+  field :email,                      type: String, default: ""
+  field :first_name,                 type: String
+  field :last_name,                  type: String
+  field :description,                type: String
+  field :mobile_number,              type: String, default: ""
+  field :image,                      type: String
+  field :encrypted_phone_id,         type: String
+  field :auth_token,                 type: String
+  field :is_verified_by_mobile,      type: Boolean, default: false
+  field :sms_serial_key,             type: String, default: ""
+  field :encrypted_password,         type: String, default: ""
 
   ## Recoverable
   # field :reset_password_token,   type: String
@@ -47,12 +47,14 @@ class User
   mount_uploader :image, ProfileImageUploader
 
   before_save :ensure_authentication_token, :mobile_verification_serial
+  before_validation :ensure_password
   
   validates :mobile_number, presence: true,
                       numericality: true,
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
-  validates :email, uniqueness: true
+  validates :email, uniqueness: true, allow_blank: true, allow_nil: true
+  validates :first_name, presence: true
 
   
   def ensure_authentication_token
@@ -62,7 +64,22 @@ class User
   end
 
   def mobile_verification_serial
-    self.mobile_verification_serial = SecureRandom.random_number(88888888)
+    self.sms_serial_key = SecureRandom.random_number(88888888)
+  end
+
+  def ensure_password
+    return if self.password.present?
+    self.password = SecureRandom.random_number(188888888)
+  end
+
+  # for devise remove email validation
+  def email_required?
+    false
+  end
+
+  # for devise remove email validation
+  def email_changed?
+    false
   end
 
   private
