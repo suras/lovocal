@@ -54,7 +54,7 @@ class User
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :first_name, presence: true
+  validates :first_name, :encrypted_phone_id, presence: true
 
   
   def ensure_authentication_token

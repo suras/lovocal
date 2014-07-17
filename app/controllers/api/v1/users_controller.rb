@@ -1,23 +1,24 @@
 class Api::V1::UsersController < Api::V1::BaseController
   
   # GET /user_profile
-  def user_profile
-    user  = User.find( params[:id])
-    render json: user, serializer: UserProfileSerializer
+  def current_user_profile
+    @user  = current_user
+    render json: @user
   rescue => e
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
   # GET '/users/id'
   def show
-    user  = current_user
-    render :json => user
+    @user  = User.find(params[:id])
+    render :json => @user, serializer: UserProfileSerializer
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
   # POST '/users'
   def create
+    params[:user][:encrypted_phone_id] = params[:user][:phone_id] if params[:user] && params[:user][:phone_id].present?
     @user = User.new(user_params)
     if(@user.save)
       render json: @user
@@ -40,11 +41,11 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # PUT/PATCH '/users/id'
   def update
-    user  = current_user
-    if(user.update_attributes(user_params))
-      render json: user
+    @user  = current_user
+    if(@user.update_attributes(user_params))
+      render json: @user
     else
-      render json: {error_code: Code[:error_resource], error_message: user.errors.full_messages},  status: Code[:status_error]
+      render json: {error_code: Code[:error_resource], error_message: @user.errors.full_messages},  status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
@@ -62,7 +63,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, 
-        :image, :description)
+        :image, :description, :encrypted_phone_id)
     end
 
 end

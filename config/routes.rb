@@ -7,7 +7,10 @@ Rails.application.routes.draw do
       
       resources :users
       post '/login', to: "users#login"
+      get  '/current_user_profile', to: "users#current_user_profile"
     
+
+
     end
   end
 
