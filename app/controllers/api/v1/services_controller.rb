@@ -5,7 +5,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
   def create 
     list_cat_ids = get_list_cat_ids_by_name
     @service = current_user.services.new(service_params.merge(list_cat_ids: list_cat_ids ))
-    @service.listing = Listing.where(name: "services").first
+    @service.listing_id = Listing.where(name: "services").first.id
     if(@service.save)
       render json: @service
     else
@@ -18,7 +18,8 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # PATCH/PUT /services
   def update
   	@service = currrent_user.services.find(params[:id])
-    if(@service.update_attributes(service_params))
+  	list_cat_ids = get_list_cat_ids_by_name
+    if(@service.update_attributes(service_params).merge(list_cat_ids: list_cat_ids ))
       render json: @service
     else
       render json: @service.errors.full_messages
@@ -57,9 +58,9 @@ class Api::V1::ServicesController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
       params.require(:service).permit(:business_name, :mobile_number, :landline_number, 
-      	:email, :description, :customer_care_no, :latitude, 
+      	:email, :description, :customer_care_no, :latitude, :address,
       	:longitude, :country, :state, :city, :zip_code, :website, :facebook_link,
-        :twitter_link, :linkedin_link, :listing_categories, service_images_attributes: [:image]
+        :twitter_link, :linkedin_link, :listing_categories, {service_images_attributes: [:image, :is_main]}
       	 )
     end
 

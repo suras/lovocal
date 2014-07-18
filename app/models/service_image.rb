@@ -3,7 +3,8 @@ class ServiceImage
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
 
-  field :image, type: String
+  field :image,          type: String
+  field :is_main,        type: Boolean, default: false
 
   embedded_in :service
 
