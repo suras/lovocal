@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET '/users/id'
   def show
     @user  = User.find(params[:id])
-    render :json => @user, serializer: UserProfileSerializer
+    render json: @user, serializer: UserProfileSerializer, root: "user"
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
@@ -53,7 +53,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.auth_token = ""
       @user.encrypted_phone_id = params[:user][:phone_id]
       @user.save
-      render json: {auth_token: @user.auth_token} 
+      render json: @user, serializer: UserAuthSerializer, root: "user"
     else
       render json: {auth_token: ""}, status: Code[:status_error]
     end

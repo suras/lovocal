@@ -6,9 +6,12 @@ Rails.application.routes.draw do
     namespace :v1, defaults:{format: 'json'} do
       
       resources :users
-      post '/login', to: "users#login"
+      resources :listing_category
+      get '/listing_category_children/:id', to: "listing_category#show_listing_category_children"
+      post '/listing_category_children/:id', to: "listing_category#create_children"
       get  '/current_user_profile', to: "users#current_user_profile"
       post '/verify_sms_key', to: "users#verify_sms_key"
+    
     end
   end
 
