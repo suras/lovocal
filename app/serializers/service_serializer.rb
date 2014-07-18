@@ -4,6 +4,7 @@ class ServiceSerializer < ActiveModel::Serializer
              :customer_care_number, :landline_number, :address, :website,
              :twitter_link, :facebook_link, :linkedin_link
   has_many :service_images
+  has_one :service_timing
 
   def id
   	object.id.to_s

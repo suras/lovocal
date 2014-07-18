@@ -26,7 +26,7 @@ class Service
   belongs_to  :listing
   belongs_to  :user
   embeds_many :service_images
-  embeds_many :service_timings
+  embeds_one :service_timing
 
   validates :business_name, :description, :latitude, :longitude,
             :city, :country, :address, presence: true

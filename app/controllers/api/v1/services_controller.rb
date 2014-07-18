@@ -54,6 +54,25 @@ class Api::V1::ServicesController < Api::V1::BaseController
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
+  # POST services/service_id/service_timings
+  def create_timings
+    @service = current_user.services.find(params[:service_id])
+    @service_timing = @service.build_service_timing
+    @service_timing.timings = {}
+    timing_pair = JSON.parse(params[:service_timing][:timings])
+    timing_pair.each_pair do |day, time|
+      @service_timing.timings[day] = time
+    end
+    @service_timing.holidays = params[:service_timing][:holidays]
+    if(@service_timing.save)
+      render json: @service_timing
+    else
+      render json: @service_timing.errors.full_messages
+    end
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]    
+  end
+
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
