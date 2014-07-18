@@ -18,15 +18,31 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # POST '/users'
   def create
-    params[:user][:encrypted_phone_id] = params[:user][:phone_id] if params[:user] && params[:user][:phone_id].present?
-    @user = User.new(user_params)
+    @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    if(@user.present?)
+      existing_user
+    else
+      create_new_user
+    end
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
+  end
+  
+  def existing_user
+    if(@user.update_attributes(sms_serial_key: ""))
+      render json: @user
+    else
+      render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]  
+    end
+  end
+
+  def create_new_user
+    @user = User.new(user_create_params)
     if(@user.save)
       render json: @user
     else
       render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]
     end
-  rescue => e
-     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
  
   # POST /verify_sms_key 
@@ -34,6 +50,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key]).first
     if(@user.present?)
       @user.is_verified_by_sms = true
+      @user.auth_token = ""
+      @user.encrypted_phone_id = params[:user][:phone_id]
       @user.save
       render json: {auth_token: @user.auth_token} 
     else
@@ -75,7 +93,10 @@ class Api::V1::UsersController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, 
-        :image, :description, :encrypted_phone_id)
+        :image, :description)
     end
 
+    def user_create_params
+      params.require(:user).permit(:mobile_number)
+    end
 end

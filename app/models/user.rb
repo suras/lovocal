@@ -53,7 +53,6 @@ class User
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :first_name, :encrypted_phone_id, presence: true
 
   mount_uploader :image, ProfileImageUploader
   
@@ -71,7 +70,7 @@ class User
 
   def ensure_password
     return if self.password.present?
-    self.password = SecureRandom.random_number(188888888)
+    self.password = SecureRandom.random_number(8888888888)
   end
 
   # for devise remove email validation

@@ -13,7 +13,7 @@ set :repo_url, 'git@github.com:suras/lovocal.git'
 
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
- set :linked_files, %w{config/database.yml}
+ set :linked_files, %w{config/mongoid.yml}
  set :linked_dirs, %w{log tmp/backup tmp/pids tmp/cache tmp/sockets vendor/bundle}
  set :linked_dirs, fetch(:linked_dirs) + %w{public/system public/uploads}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
