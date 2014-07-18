@@ -47,6 +47,8 @@ class User
   
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_validation :ensure_password
+
+  has_many :services
   
   validates :mobile_number, presence: true,
                       numericality: true,

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       
       resources :users
       resources :listing_category
+      resources :services
       get '/listing_category_children/:id', to: "listing_category#show_listing_category_children"
       post '/listing_category_children/:id', to: "listing_category#create_children"
       get  '/current_user_profile', to: "users#current_user_profile"

@@ -7,6 +7,6 @@ class ServiceImage
 
   embedded_in :service
 
-  mount_uploader :image, ProfileImageUploader
+  # mount_uploader :image, ProfileImageUploader
 
 end
