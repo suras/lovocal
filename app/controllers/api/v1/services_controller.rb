@@ -5,7 +5,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
   def create 
     list_cat_ids = get_list_cat_ids_by_name
     @service = current_user.services.new(service_params.merge(list_cat_ids: list_cat_ids ))
-    @service.listing_id = Listing.where(name: "services").first.id
+    @service.listing = Listing.where(listing_type: "services").first
     if(@service.save)
       render json: @service
     else

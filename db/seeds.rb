@@ -6,4 +6,4 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-listing = Listing.where(name: "services").first_or_create!
+listing = Listing.where(listing_type: "services").first_or_create!

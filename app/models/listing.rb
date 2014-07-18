@@ -3,6 +3,8 @@ class Listing
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   
-  field :name,                      type: String, default: ""
+  field :listing_type,      type: String, default: ""
   
+  has_many :services
+
 end
