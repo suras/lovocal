@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get  '/current_user_profile', to: "users#current_user_profile"
       post '/verify_sms_key', to: "users#verify_sms_key"
       post '/services/:service_id/service_timings', to: "services#create_timings"
+      post '/services/:service_id/service_images', to: "services#create_images"
       resources :users
       resources :listing_category
       resources :services
