@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  
+  before_action :authenticate_user!, except: [:show, :create, :verify_sms_key]
   # GET /user_profile
   def current_user_profile
     @user  = current_user

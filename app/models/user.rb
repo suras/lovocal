@@ -55,7 +55,7 @@ class User
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-
+  validates :encrypted_phone_id, uniqueness: true
   mount_uploader :image, ProfileImageUploader
   
   def ensure_authentication_token

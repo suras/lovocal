@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1, defaults:{format: 'json'} do
-      
 
       get '/listing_categories/:category_id/children', to: "listing_categories#show_listing_category_children"
       post '/listing_categories/:category_id/children', to: "listing_categories#create_children"
@@ -13,6 +12,7 @@ Rails.application.routes.draw do
       post '/services/:service_id/service_timings', to: "services#create_timings"
       post '/services/:service_id/service_images', to: "services#create_images"
       delete '/services/:service_id/service_images', to: "services#destroy_images"
+      get '/search', to: "search#search"
       resources :users
       resources :listing_categories
       resources :services

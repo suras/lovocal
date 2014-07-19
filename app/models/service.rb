@@ -45,7 +45,7 @@ class Service
 
   def update_geo_location
     if latitude.present? && longitude.present?
-      location = [latitude, longitude]
+      self.location = [latitude: latitude.to_f, longitude: longitude.to_f]
     end
   end 
 
