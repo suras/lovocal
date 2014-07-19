@@ -40,7 +40,10 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # DELETE /services/:service_id/service_images
   def destroy_images
     @service = current_user.services.find(params[:service_id])
-    @service.service_images.where(id: params[:ids]).destroy
+    @service.service_images.where(:_id.in => params[:service_image][:ids]).destroy   
+    render json: { head: :no_content}
+  rescue => e
+    render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
   # POST /services/:service_id/service_images

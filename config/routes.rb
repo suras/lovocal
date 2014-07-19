@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       post '/verify_sms_key', to: "users#verify_sms_key"
       post '/services/:service_id/service_timings', to: "services#create_timings"
       post '/services/:service_id/service_images', to: "services#create_images"
+      delete '/services/:service_id/service_images', to: "services#destroy_images"
       resources :users
       resources :listing_category
       resources :services
