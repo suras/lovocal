@@ -8,9 +8,10 @@ class Service
   field :landline_number,             type: String
   field :email,                       type: String
   field :description,                 type: String, default: ""
-  field :customer_care_number,         type: Array
-  field :latitude,                    type: String
-  field :longitude,                   type: String
+  field :customer_care_number,        type: Array
+  field :latitude,                    type: String, default: ""
+  field :longitude,                   type: String, default: ""
+  field :location,                    type: Array
   field :country,                     type: String
   field :state,                       type: String
   field :city,                        type: String
@@ -22,6 +23,10 @@ class Service
   field :linkedin_link,               type: String
   field :list_cat_ids,                type: Array
   field :verified_by_sms,             type: Boolean, default: false
+
+  index({ location: "2d" }, { min: -200, max: 200 })
+
+  before_save :update_geo_location
 
   belongs_to  :listing
   belongs_to  :user
@@ -37,6 +42,12 @@ class Service
   validates :longitude, numericality: { greater_than: -180, less_than: 180 }
 
   accepts_nested_attributes_for :service_images
+
+  def update_geo_location
+    if latitude.present? && longitude.present?
+      location = [latitude, longitude]
+    end
+  end 
 
 
 end

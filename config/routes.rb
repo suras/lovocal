@@ -6,15 +6,15 @@ Rails.application.routes.draw do
     namespace :v1, defaults:{format: 'json'} do
       
 
-      get '/listing_category_children/:id', to: "listing_category#show_listing_category_children"
-      post '/listing_category_children/:id', to: "listing_category#create_children"
+      get '/listing_categories/:category_id/children', to: "listing_categories#show_listing_category_children"
+      post '/listing_categories/:category_id/children', to: "listing_categories#create_children"
       get  '/current_user_profile', to: "users#current_user_profile"
       post '/verify_sms_key', to: "users#verify_sms_key"
       post '/services/:service_id/service_timings', to: "services#create_timings"
       post '/services/:service_id/service_images', to: "services#create_images"
       delete '/services/:service_id/service_images', to: "services#destroy_images"
       resources :users
-      resources :listing_category
+      resources :listing_categories
       resources :services
     
     end

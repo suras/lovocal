@@ -7,7 +7,11 @@ class ListingCategory
   include Mongoid::Timestamps::Updated
 
   field :name, type: String
+  field :image, type: String
 
   validates :name, presence: true, uniqueness: true
+
+  mount_uploader :image, CategoryImageUploader
+
 
 end

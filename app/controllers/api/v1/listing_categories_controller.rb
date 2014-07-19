@@ -1,5 +1,13 @@
-class Api::V1::ListingCategoryController < Api::V1::BaseController
-   
+class Api::V1::ListingCategoriesController < Api::V1::BaseController
+ 
+  # GET /listing_category  
+  def index
+    @listing_categories = ListingCategory.roots
+    render json: @listing_categories
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
+  end
+
   # POST /listing_category
   def create 
     @listing_category = ListingCategory.new(listing_category_params)
@@ -14,7 +22,7 @@ class Api::V1::ListingCategoryController < Api::V1::BaseController
 
   #POST /listing_category_children/:id
   def create_children
-  	@listing_parent_category = ListingCategory.find(params[:id])
+  	@listing_parent_category = ListingCategory.find(params[:category_id])
     @listing_children_category = ListingCategory.new(listing_category_params)
     if(@listing_children_category.save)
       @listing_parent_category.children << @listing_children_category
@@ -28,7 +36,7 @@ class Api::V1::ListingCategoryController < Api::V1::BaseController
 
   # GET /listing_category_children
   def show_listing_category_children
-    @listing_category = ListingCategory.find(params[:id])
+    @listing_category = ListingCategory.find(params[:category_id])
     @children = @listing_category.children
     render json: @children
   rescue => e
