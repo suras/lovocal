@@ -32,6 +32,8 @@ class Service
   belongs_to  :user
   embeds_many :service_images
   embeds_one :service_timing
+  has_many :chat_logs
+  has_many :chat_response_logs
 
   validates :business_name, :description, :latitude, :longitude,
             :city, :country, :address, presence: true

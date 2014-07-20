@@ -49,6 +49,7 @@ class User
   before_validation :ensure_password
 
   has_many :services
+  has_many :chat_logs
   
   validates :mobile_number, presence: true,
                       numericality: true,
