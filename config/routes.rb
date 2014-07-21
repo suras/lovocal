@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       post '/services/:service_id/service_images', to: "services#create_images"
       delete '/services/:service_id/service_images', to: "services#destroy_images"
       get '/search', to: "search#search"
+      post '/chat', to: "chat#send_message"
       resources :users
       resources :listing_categories
       resources :services

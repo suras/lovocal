@@ -3,7 +3,7 @@ class ChatLog
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
 
-  field :is_seen, type: Boolend, default: false
+  field :is_seen, type: Boolean, default: false
   field :chat_id, type: String
   
   belongs_to :user

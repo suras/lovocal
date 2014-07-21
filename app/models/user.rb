@@ -14,7 +14,7 @@ class User
   field :description,                type: String
   field :mobile_number,              type: String, default: ""
   field :image,                      type: String
-  field :encrypted_phone_id,         type: String
+  field :encrypted_phone_id,         type: String, default: ""
   field :auth_token,                 type: String
   field :is_verified_by_sms,      type: Boolean, default: false
   field :sms_serial_key,             type: String, default: ""
@@ -50,13 +50,14 @@ class User
 
   has_many :services
   has_many :chat_logs
+  has_many :user_chat_logs
   
   validates :mobile_number, presence: true,
                       numericality: true,
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :encrypted_phone_id, uniqueness: true
+  validates :encrypted_phone_id, uniqueness: true, allow_blank: true, allow_nil: true
   mount_uploader :image, ProfileImageUploader
   
   def ensure_authentication_token

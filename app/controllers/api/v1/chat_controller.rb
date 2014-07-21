@@ -1,29 +1,23 @@
 class Api::V1::ChatController < Api::V1::BaseController
-
+  before_filter :authenticate_user!
   def set_message
      @chat = Chat.save_chat(params[:chat])	
      @sender_id = @chat[:sender_id]  
      @receiver_id = @chat[:receiver_id]
      @chat_id = @chat[:chat_id]
      @exchange = params[:exchange]
-     @chat_hash = {message: params[:message], chat_id: @chat_id, 
-     	          sent_time: params[:sent_time], sender_type: params[:sender_type]
-                  sender_id: params[:sender_id], receiver_id: params[:receiver_id],
-                  receiver_type: params[:receiver_type], 
-                  listing_category: params[:listing_category]
+     @chat_hash = {message: params[:chat][:message], chat_id: @chat_id, 
+     	          sent_time: params[:chat][:sent_time], sender_type: params[:chat][:sender_type],
+                  sender_id: params[:chat][:sender_id], receiver_id: params[:chat][:receiver_id],
+                  receiver_type: params[:chat][:receiver_type], 
+                  listing_category: params[:chat][:listing_category]
      	          }  
   end
 
   # POST /chat
   def send_message
     EM.next_tick {
-      begin
-        set_message
-      rescue => e
-        Rails.logger.info "error! #{e}"
-        render json: {error: "message not send"}
-        return
-      end
+      set_message
       connection = AMQP.connect(:host => '127.0.0.1', :user=>Rails.application.secrets.rabbitmq_user, :pass => Rails.application.secrets.rabbitmq_password, :vhost => "/")
       AMQP.channel ||= AMQP::Channel.new(connection)
       channel  = AMQP.channel
@@ -52,13 +46,16 @@ class Api::V1::ChatController < Api::V1::BaseController
       EventMachine::error_handler { |e| puts "error! in eventmachine #{e}" }
         render json: {}
     }
+  rescue => e
+      Rails.logger.info "error! #{e}"
+      render json: {error: "message not send"}, status: Code[:status_error]
   end
 
   # POST /chat_acknowledge
   def chat_acknowledge
     @chat = Chat.find(params[:chat][:chat_id]) 
     if(@chat)
-      ChatLog.save_log(params[:chat][:viewer_id], params[:chat][:viewer_type], params[:chat][:chat_id])
+      ChatLog.save_log(params[:chat])
     end
     render json: {}
   rescue => e

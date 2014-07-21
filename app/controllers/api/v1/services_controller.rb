@@ -9,7 +9,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     if(@service.save)
       render json: @service
     else
-      render json: @service.errors.full_messages
+      render json: @service.errors.full_messages, status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
@@ -22,7 +22,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     if(@service.update_attributes(service_params).merge(list_cat_ids: list_cat_ids ))
       render json: @service
     else
-      render json: @service.errors.full_messages
+      render json: @service.errors.full_messages, status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
@@ -82,13 +82,13 @@ class Api::V1::ServicesController < Api::V1::BaseController
       params.require(:service).permit(:business_name, :mobile_number, :landline_number, 
       	:email, :description, :customer_care_no, :latitude, :address,
       	:longitude, :country, :state, :city, :zip_code, :website, :facebook_link,
-        :twitter_link, :linkedin_link, :listing_categories, {service_images_attributes: [:image, :is_main]}
+        :twitter_link, :linkedin_link, {service_images_attributes: [:image, :is_main]}
       	 )
     end
 
     def get_list_cat_ids_by_name
 	  ids = Array.new
-	  params[:service][:listing_categories].each do |cat|
+	  params[:service][:listing_categories].try(:each) do |cat|
         list_cat = ListingCategory.where(name: cat).first
         ids << list_cat.id.to_s if list_cat.present?
 	  end
