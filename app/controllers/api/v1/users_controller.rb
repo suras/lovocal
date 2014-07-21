@@ -88,6 +88,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
+ 
+ # GET /key
+  def get_key
+    user = User.where(mobile_number: params[:mobile_number]).first
+    render json: user.to_json
+  end
 
   private
     # Never trust parameters from the scary internet, only allow the white list through.
