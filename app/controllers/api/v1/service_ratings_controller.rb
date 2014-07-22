@@ -1,6 +1,6 @@
-class Api::V1::ServiceRatingsController < ApplicationController
+class Api::V1::ServiceRatingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:index]
-  before_ation :set_service, only: [:create, :index]
+  before_action :set_service, only: [:create, :index]
 
   # GET /services/service_rating
   def index
@@ -17,7 +17,7 @@ class Api::V1::ServiceRatingsController < ApplicationController
     if(@service_rating.save)
       render json: @service_rating
     else
-      render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
+      render json: {error_code: Code[:error_rescue], error_message: @service_rating.errors.full_messages}, status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
@@ -26,7 +26,7 @@ class Api::V1::ServiceRatingsController < ApplicationController
   # PATCH/PUT /services/:service_id/service_rating
   def update
   	@service_rating = current_user.service_ratings.find(params[:id])
-    if(@service_rating.update_attributes(service_rating_params).merge(list_cat_ids: list_cat_ids ))
+    if(@service_rating.update_attributes(service_rating_params))
       render json: @service_rating
     else
       render json: {error_code: Code[:error_rescue], error_message: @service_rating.errors.full_messages}, status: Code[:status_error]
@@ -48,7 +48,7 @@ class Api::V1::ServiceRatingsController < ApplicationController
   
   def set_service
   	return nil if params[:service_id].blank?
-    @service = @service.find(params[:service_id])
+    @service = Service.find(params[:service_id])
   end
 
   def service_rating_params

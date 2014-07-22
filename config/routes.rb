@@ -20,8 +20,9 @@ Rails.application.routes.draw do
       post '/chat', to: "chat#send_message"
       resources :users
       resources :listing_categories
-      resources :services
-    
+      resources :services do
+        resources :service_ratings
+      end
     end
   end
 
