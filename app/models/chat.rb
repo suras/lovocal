@@ -39,6 +39,26 @@ class Chat
     end
   end
 
+  def self.can_send_chat(sender_id, sender_type, receiver_id, receiver_type)
+    if sender_type.downcase == "service"
+      chat = UserChatBlock.where(service_id: sender_id).first
+      if(chat.present?)
+        return {can_send: false, messssage: "You can only reply to use queries"}
+      else
+        ServiceChatBlock.where(user_id: sender_id).first.destroy
+        return {can_send: true, messssage: ""}
+      end
+    elsif(sender_type.downcase == "user")
+      chat = ServiceChatBlock.where(user_id: sender_id).first
+      if(chat.present?)
+        return {can_send: false, messssage: "The service is not present in chat"}
+      else
+        UserChatBlock.where(service_id: sender_id).first.destroy
+        return {can_send: true, messssage: ""}
+      end
+    end
+  end
+
   def self.get_chatter(id, type)
     if(type.downcase == "user")
       return User.find(id)

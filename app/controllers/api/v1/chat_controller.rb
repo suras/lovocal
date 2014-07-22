@@ -1,11 +1,18 @@
 class Api::V1::ChatController < Api::V1::BaseController
   before_filter :authenticate_user!
   def set_message
-     @chat = Chat.save_chat(params[:chat])	
-     @sender_id = @chat[:sender_id]  
-     @receiver_id = @chat[:receiver_id]
-     @chat_id = @chat[:chat_id]
-     @exchange = params[:exchange]
+     can_send_chat = Chat.can_send_chat(params[:chat][:sender_id],params[:chat][:sender_type],
+                              params[:chat][:receiver_id], params[:receiver_type])
+    if(can_send_chat[:can_send])
+       @chat = Chat.save_chat(params[:chat])	
+       @sender_id = @chat[:sender_id]  
+       @receiver_id = @chat[:receiver_id]
+       @chat_id = @chat[:chat_id]
+     else
+       @chat_id = ""
+       @receiver_id = false
+       params[:chat][:message] = can_send_chat[:message]
+     end
      @chat_hash = {message: params[:chat][:message], chat_id: @chat_id, 
      	          sent_time: params[:chat][:sent_time], sender_type: params[:chat][:sender_type],
                   sender_id: params[:chat][:sender_id], receiver_id: params[:chat][:receiver_id],
@@ -17,12 +24,11 @@ class Api::V1::ChatController < Api::V1::BaseController
   # POST /chat
   def send_message
     EM.next_tick {
-      set_message
       connection = AMQP.connect(:host => '127.0.0.1', :user=>Rails.application.secrets.rabbitmq_user, :pass => Rails.application.secrets.rabbitmq_password, :vhost => "/")
       AMQP.channel ||= AMQP::Channel.new(connection)
       channel  = AMQP.channel
       channel.auto_recovery = true
-      
+      set_message
       if(@receiver_id)
         receiver_exchange = channel.fanout(@receiver_id+"exchange")
         receiver_exchange.publish(@chat_hash.to_json)
@@ -48,7 +54,7 @@ class Api::V1::ChatController < Api::V1::BaseController
     }
   rescue => e
       Rails.logger.info "error! #{e}"
-      render json: {error: "message not send"}, status: Code[:status_error]
+      render json: {error_message: "message not send"}, status: Code[:status_error]
   end
 
   # POST /chat/acknowledge
