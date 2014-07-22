@@ -79,8 +79,10 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # GET /services/:id/rating
   def rating
     @service  =  Service.find(params[:id])
-    ratings_array = @service.service_ratings.where(:"rating".gt => 5)
-    render json: ratings_array  
+    avg = @service.avg_rating
+    render json: {rating: avg} 
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]     
   end
 
   private

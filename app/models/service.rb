@@ -23,6 +23,7 @@ class Service
   field :linkedin_link,               type: String
   field :list_cat_ids,                type: Array
   field :verified_by_sms,             type: Boolean, default: false
+  field :rating,                      type: Integer, default: 0
 
   index({ location: "2d" }, { min: -200, max: 200 })
 
@@ -50,8 +51,19 @@ class Service
     if latitude.present? && longitude.present?
       self.location = [latitude: latitude.to_f, longitude: longitude.to_f]
     end
+  end
+
+  def avg_rating
+    ratings_array = self.service_ratings.where(:"rating".gt => 0)
+    count = ratings_array.count
+    sum = ratings_array.sum(:rating) 
+    (sum/count)*100/100
   end 
 
+  def update_avg_rating
+    self.rating = avg_rating
+    self.save
+  end
 
 end
 

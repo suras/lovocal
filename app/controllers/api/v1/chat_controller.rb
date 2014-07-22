@@ -10,7 +10,7 @@ class Api::V1::ChatController < Api::V1::BaseController
      	          sent_time: params[:chat][:sent_time], sender_type: params[:chat][:sender_type],
                   sender_id: params[:chat][:sender_id], receiver_id: params[:chat][:receiver_id],
                   receiver_type: params[:chat][:receiver_type], 
-                  listing_category: params[:chat][:listing_category]
+                  list_cat_id: params[:chat][:list_cat_id]
      	          }  
   end
 
