@@ -21,6 +21,16 @@ class Api::V1::ChatController < Api::V1::BaseController
      	          }  
   end
 
+  # def set_chat_params
+  #   @message = params[:chat][:message]
+  #   @sender_id = params[:chat][:sender_id]
+  #   @sender_type = params[:chat][:sender_type]
+  #   @receiver_id = params[:chat][:receiver_id]
+  #   @receiver_type = params[:chat][:receiver_type]
+  #   @list_cat_id = params[:chat][:list_cat_id]
+  #   @sent_time = params[:chat][:sent_time]
+  # end
+
   # POST /chat
   def send_message
     EM.next_tick {
@@ -50,13 +60,40 @@ class Api::V1::ChatController < Api::V1::BaseController
        conn.periodically_reconnect(30)
       end
       EventMachine::error_handler { |e| puts "error! in eventmachine #{e}" }
-        render json: {}
     }
-  rescue => e
-      Rails.logger.info "error! #{e}"
-      render json: {error_message: "message not send"}, status: Code[:status_error]
   end
 
+  # POST /multiple_chats
+  def send_multiple_chats
+    @list_cat_id = params[:chat][:list_cat_id]
+    @latitude = params[:chat][:latitude].to_f
+    @latitude = params[:chat][:longitude].to_f
+    @message = params[:chat][:message]
+    @user_id = params[:chat][:user_id]
+    @distance = 50
+    @services = Service.get_services_for_chat(@latitude, @longitude, @list_cat_id, @user_id)
+    if(@services.blank?)
+      render json: {error_message: "no services or u have messaged all the existing services"}, status: Code[:status_error]
+    else
+      send_service_messages
+      render json: {}
+    end
+  end
+
+  def send_service_messages
+    @services.each do |service|
+      params =  Hash.new
+      params[:chat] = {}
+      params[:chat][:message] = @message
+      params[:chat][:sender_id] = service.id
+      params[:chat][:sender_type] = "service"
+      params[:chat][:receiver_id] = @user_id
+      params[:chat][:receiver_type] = "user"
+      params[:chat][:chat_id] = ""
+      params[:chat][:list_cat_id] = @list_cat_id
+      send_message
+    end
+  end
   # POST /chat/acknowledge
   def chat_acknowledge
     @chat = Chat.find(params[:chat][:chat_id]) 

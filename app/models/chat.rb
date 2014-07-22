@@ -14,12 +14,15 @@ class Chat
   def self.save_chat(params)
   	sender = Chat.get_chatter(params[:sender_id], params[:sender_type])
   	receiver = Chat.get_chatter(params[:receiver_id], params[:receiver_type])
-   chat =  Chat.create!(message: params[:message], sender_id: sender.id.to_s, 
+    raise "Chatter not found" unless sender.present? && receiver.present?
+    chat =  Chat.create!(message: params[:message], sender_id: sender.id.to_s, 
     	 receiver_id: receiver.id.to_s, sender_type: sender.class.to_s,
     	 receiver_type: receiver.class.to_s)
     Chat.save_chat_logs_and_response(sender, receiver, chat.id.to_s, params[:reply_id], params[:list_cat_id])
     return {sender_id: sender.id.to_s, receiver_id: receiver.id.to_s,
-     chat_id: chat.id.to_s}  
+     chat_id: chat.id.to_s}
+  rescue => e
+    raise "something went wrong #{e}"  
   end
 
   def self.save_chat_logs_and_response(sender, receiver, chat_id, reply_id, list_cat_id)
@@ -45,7 +48,7 @@ class Chat
       if(chat.present?)
         return {can_send: false, messssage: "You can only reply to use queries"}
       else
-        ServiceChatBlock.where(user_id: sender_id).first.destroy
+        ServiceChatBlock.where(user_id: sender_id).first.try(:destroy)
         return {can_send: true, messssage: ""}
       end
     elsif(sender_type.downcase == "user")
@@ -53,17 +56,19 @@ class Chat
       if(chat.present?)
         return {can_send: false, messssage: "The service is not present in chat"}
       else
-        UserChatBlock.where(service_id: sender_id).first.destroy
+        UserChatBlock.where(service_id: sender_id).first.try(:destroy)
         return {can_send: true, messssage: ""}
       end
     end
+  rescue => e
+    raise "something went wrong #{e}" 
   end
 
   def self.get_chatter(id, type)
     if(type.downcase == "user")
-      return User.find(id)
+      return User.where(_id: id).first
     elsif(type.downcase == "service")
-      return Service.find(id)
+      return Service.where(_id: id).first
     else
       raise "no chatter found"
     end
