@@ -76,6 +76,13 @@ class Api::V1::ServicesController < Api::V1::BaseController
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]    
   end
 
+  # GET /services/:id/rating
+  def rating
+    @service  =  Service.find(params[:id])
+    ratings_array = @service.service_ratings.where(:"rating".gt => 5)
+    render json: ratings_array  
+  end
+
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params

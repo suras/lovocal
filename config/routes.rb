@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       get '/users/current_user_services', to: 'users#current_user_services'
       post '/chat/acknowledge', to: "chat#chat_acknowledge"
       post '/chat', to: "chat#send_message"
+      get  '/services/:id/rating', to: "services#rating"
       resources :users
       resources :listing_categories
       resources :services do

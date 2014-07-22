@@ -4,7 +4,7 @@ class ServiceRating
   include Mongoid::Timestamps::Updated
 
   field :comment, type: String
-  field :rating, type: String
+  field :rating, type: String, default: "0"
   field :service_id, type: BSON::ObjectId
   field :user_id, type: BSON::ObjectId
 
