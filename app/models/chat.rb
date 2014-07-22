@@ -24,7 +24,7 @@ class Chat
 
   def self.save_chat_logs_and_response(sender, receiver, chat_id, reply_id, list_cat_id)
     receiver_log = receiver.chat_logs.where(chat_id: chat_id).first_or_create!
-    sender_log = sender.chat_logs.where(chat_id: chat_id).first_or_create!
+    # sender_log = sender.chat_logs.where(chat_id: chat_id).first_or_create!
     if(sender.class.to_s == "User")
        sender.user_chat_logs.where(service_id: receiver.id.to_s, list_cat_id: list_cat_id).first_or_create!
     else

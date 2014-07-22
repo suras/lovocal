@@ -14,6 +14,9 @@ Rails.application.routes.draw do
       delete '/services/:service_id/service_images', to: "services#destroy_images"
       get '/search', to: "search#search"
       get '/key', to: "users#get_key"
+      get '/users/:user_id/services', to: 'users#user_services'
+      get '/users/current_user_services', to: 'users#current_user_services'
+      post '/chat/acknowledge', to: "chat#chat_acknowledge"
       post '/chat', to: "chat#send_message"
       resources :users
       resources :listing_categories

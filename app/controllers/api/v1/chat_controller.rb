@@ -51,7 +51,7 @@ class Api::V1::ChatController < Api::V1::BaseController
       render json: {error: "message not send"}, status: Code[:status_error]
   end
 
-  # POST /chat_acknowledge
+  # POST /chat/acknowledge
   def chat_acknowledge
     @chat = Chat.find(params[:chat][:chat_id]) 
     if(@chat)

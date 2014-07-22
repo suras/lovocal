@@ -9,7 +9,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     if(@service.save)
       render json: @service
     else
-      render json: @service.errors.full_messages, status: Code[:status_error]
+      render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
@@ -22,7 +22,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     if(@service.update_attributes(service_params).merge(list_cat_ids: list_cat_ids ))
       render json: @service
     else
-      render json: @service.errors.full_messages, status: Code[:status_error]
+      render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
     end
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]

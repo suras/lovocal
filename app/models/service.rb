@@ -34,6 +34,7 @@ class Service
   embeds_one :service_timing
   has_many :chat_logs
   has_many :chat_response_logs
+  has_many :service_ratings
 
   validates :business_name, :description, :latitude, :longitude,
             :city, :country, :address, presence: true

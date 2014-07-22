@@ -88,6 +88,23 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
+
+  # GET /users/current_user_services
+  def current_user_services
+    @services = current_user.services
+    render json: @services, root: :services
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]    
+  end
+
+  # GET /users/:user_id/services
+  def user_services
+    @user = User.find(params[:user_id])
+    @services = @user.services
+    render json: @services, root: :services
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]    
+  end
  
  # GET /key
   def get_key
