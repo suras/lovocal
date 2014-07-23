@@ -72,6 +72,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PUT/PATCH '/users/id'
   def update
     @user  = current_user
+    if(params[:image].present?)
+      @user.image = params[:image]
+    end
     if(@user.update_attributes(user_params))
       render json: @user
     else

@@ -17,7 +17,7 @@ class Api::V1::ChatController < Api::V1::BaseController
         chat_hash = Chat.set_message(params)
       rescue => e
         params[:receiver_id] = nil
-        params[:message] = "something went wrong. unable to send chat #{e}"
+        params[:message] = "something went wrong. unable to send chat error: #{e}"
         chat_hash = params
       end
       if(chat_hash[:receiver_id])
@@ -75,7 +75,24 @@ class Api::V1::ChatController < Api::V1::BaseController
       ampq(params[:chat])
     end
   end
-  
+
+  # POST /chat/user_chat_block
+  def user_chat_block
+     UserChatBlock.where(service_id: params[:chat][:service_id], user_id: current_user.id.to_s).first_or_create!
+    render json: {}
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
+  end
+
+  # POST /chat/service_chat_block
+  def service_chat_block
+    service = current_user.services.find(params[:chat][:service_id])
+    ServiceChatBlock.where(user_id: params[:user_id], service_id: service.id.to_s).first_or_create!
+    render json: {}
+  rescue => e
+     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
+  end
+
   # POST /chat/acknowledge
   def chat_acknowledge
     @chat = Chat.find(params[:chat][:chat_id]) 

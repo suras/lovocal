@@ -6,7 +6,6 @@ class Api::V1::ServicesController < Api::V1::BaseController
     @service = current_user.services.new(service_params)
     @service.listing = Listing.where(listing_type: "services").first
     if(@service.save)
-      binding.pry
       render json: @service
     else
       render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
