@@ -51,6 +51,7 @@ class Api::V1::ChatController < Api::V1::BaseController
     @latitude = params[:chat][:longitude].to_f
     @message = params[:chat][:message]
     @user_id = params[:chat][:user_id]
+    @sent_time = params[:chat][:sent_time]
     @distance = 50
     @services = Service.get_services_for_chat(@latitude, @longitude, @distance, @list_cat_id, @user_id)
     if(@services.blank?)
@@ -72,6 +73,7 @@ class Api::V1::ChatController < Api::V1::BaseController
       params[:chat][:receiver_type] = "service"
       params[:chat][:chat_id] = ""
       params[:chat][:list_cat_id] = @list_cat_id
+      params[:chat][:sent_time] = @sent_time
       ampq(params[:chat])
     end
   end
