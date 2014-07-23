@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1, defaults:{format: 'json'} do
-
       get '/listing_categories/:category_id/children', to: "listing_categories#show_listing_category_children"
       post '/listing_categories/:category_id/children', to: "listing_categories#create_children"
       get  '/current_user_profile', to: "users#current_user_profile"
@@ -18,7 +17,7 @@ Rails.application.routes.draw do
       get '/users/current_user_services', to: 'users#current_user_services'
       post '/chat/acknowledge', to: "chat#chat_acknowledge"
       post '/chat', to: "chat#send_message"
-      post '/multiple_chats', to: "chats#send_multiple_chats"
+      post '/multiple_chats', to: "chat#send_multiple_chats"
       get  '/services/:id/rating', to: "services#rating"
       resources :users
       resources :listing_categories

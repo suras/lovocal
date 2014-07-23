@@ -3,10 +3,10 @@ class Api::V1::ServicesController < Api::V1::BaseController
   
   # POST /listing_category
   def create 
-    list_cat_ids = get_list_cat_ids_by_name
-    @service = current_user.services.new(service_params.merge(list_cat_ids: list_cat_ids ))
+    @service = current_user.services.new(service_params)
     @service.listing = Listing.where(listing_type: "services").first
     if(@service.save)
+      binding.pry
       render json: @service
     else
       render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
@@ -18,8 +18,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # PATCH/PUT /services
   def update
   	@service = currrent_user.services.find(params[:id])
-  	list_cat_ids = get_list_cat_ids_by_name
-    if(@service.update_attributes(service_params).merge(list_cat_ids: list_cat_ids ))
+    if(@service.update_attributes(service_params))
       render json: @service
     else
       render json: {error_code: Code[:error_rescue], error_message: @service.errors.full_messages}, status: Code[:status_error]
@@ -89,7 +88,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
       params.require(:service).permit(:business_name, :mobile_number, :landline_number, 
-      	:email, :description, :customer_care_no, :latitude, :address,
+      	:email, :description, :customer_care_no, :latitude, :address, {list_cat_ids: []},
       	:longitude, :country, :state, :city, :zip_code, :website, :facebook_link,
         :twitter_link, :linkedin_link, {service_images_attributes: [:image, :is_main]}
       	 )

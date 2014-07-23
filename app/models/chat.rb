@@ -10,7 +10,26 @@ class Chat
   field :receiver_id, type: String
   field :listing_category, type: String
 
-
+  def self.set_message(params)
+     can_send_chat = Chat.can_send_chat(params[:sender_id],params[:sender_type],
+                              params[:receiver_id], params[:receiver_type])
+    if(can_send_chat[:can_send])
+       chat = Chat.save_chat(params)  
+       params[:receiver_id] = chat[:receiver_id]
+       chat_id = chat[:chat_id]
+     else
+       chat_id = ""
+       params[:receiver_id] = false
+       params[:chat][:message] = can_send_chat[:message]
+     end
+    return  {message: params[:message], chat_id: chat_id, 
+                sent_time: params[:sent_time], sender_type: params[:sender_type],
+                  sender_id: params[:sender_id], receiver_id: params[:receiver_id],
+                  receiver_type: params[:receiver_type], 
+                  list_cat_id: params[:list_cat_id]
+                }  
+  end
+  
   def self.save_chat(params)
   	sender = Chat.get_chatter(params[:sender_id], params[:sender_type])
   	receiver = Chat.get_chatter(params[:receiver_id], params[:receiver_type])
@@ -72,7 +91,6 @@ class Chat
     else
       raise "no chatter found"
     end
-  
   end
 
 end

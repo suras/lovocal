@@ -12,7 +12,8 @@ class ServiceSerializer < ActiveModel::Serializer
   end
 
   def listing_categories
-    listing_categories = ListingCategory.find(object.list_cat_ids).map{
+    return "" if object.list_cat_ids.blank?
+    listing_categories = ListingCategory.where(:list_cat_ids.in => object.list_cat_ids).map{
     	|cat| cat.name
     }
   end
