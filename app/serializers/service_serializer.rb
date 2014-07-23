@@ -11,6 +11,10 @@ class ServiceSerializer < ActiveModel::Serializer
   	object.id.to_s
   end
 
+  def rating
+    object.rating.to_s
+  end
+
   def listing_categories
     return "" if object.list_cat_ids.blank?
     listing_categories = ListingCategory.where(:list_cat_ids.in => object.list_cat_ids).map{
