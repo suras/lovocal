@@ -1,0 +1,2 @@
+class ServiceRatingsController < ApplicationController
+end

@@ -36,6 +36,10 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'angularjs-rails'
+
+gem 'bootstrap-sass'
+
 gem 'devise'
 
 gem 'cancan'
@@ -85,5 +89,6 @@ group :development do
    gem "binding_of_caller"
    gem 'pry'
    gem 'quiet_assets'
+   gem  'rails_layout'
 end
 
