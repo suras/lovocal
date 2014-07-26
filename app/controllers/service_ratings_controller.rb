@@ -55,7 +55,10 @@ class ServiceRatingsController < ApplicationController
   def destroy
     @service_rating = current_user.service_ratings.find(params[:id])
     @service_rating.destroy
-    render json: { head: :no_content}
+    respond_to do |format|
+      format.html { redirect_to service_ratings__url, notice: 'Service rating was successfully destroyed.' }
+      format.json { head :no_content }
+    end
   end
 
   private
