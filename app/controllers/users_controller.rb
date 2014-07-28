@@ -50,15 +50,22 @@ class UsersController < ApplicationController
     end
   end
 
-
-  # POST /login/ 
-  def create_login
+  # GET /users/login/new
+  def new_login
 
   end
 
-  # GET /login/new
-  def new_login
-
+  # POST /users//login/ 
+  def create_login
+    @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    respond_to do |format|
+      if(@user && @user.valid_password?(params[:user][:password])
+        sign_in @user
+        format.html { redirect_to root_url, notice: 'Signed In Successfully' }
+      else
+        format.html { render :new_login }
+      end
+    end
   end
 
   # POST /users/create_password
@@ -72,7 +79,8 @@ class UsersController < ApplicationController
         @user.first_name = params[:user][:last_name]
         @user.password = params[:user][:password]
         @user.save
-        format.html { redirect_to root_url, notice: 'Signed In Successfully' }
+        sign_in @user
+        format.html { redirect_to root_url, notice: 'Signed Up Successfully' }
       else
         format.html { render :create_new_password }
       end

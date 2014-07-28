@@ -2,6 +2,11 @@ Rails.application.routes.draw do
   
   devise_for :users
   root to: "public#index"
+  post 'users/login' to: "users#login", as: :user_login
+  get 'users/login/new' to: "users#new_login", as: :new_user_login
+  post 'users/create_password', to: "users#create_password", as: :create_user_password
+
+
   namespace :api do
     namespace :v1, defaults:{format: 'json'} do
       get '/listing_categories/:category_id/children', to: "listing_categories#show_listing_category_children"
