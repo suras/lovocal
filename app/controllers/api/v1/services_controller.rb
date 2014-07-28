@@ -47,7 +47,8 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # POST /services/:service_id/service_images
   def create_images
     @service = current_user.services.find(params[:service_id])
-    params[:service_image][:image].each do |image|
+    images = JSON.parse(params[:service_image])
+    images["image"].each do |image|
       @service.service_images.create!(image: image)
     end
     render json: @service.service_images

@@ -16,8 +16,12 @@ class User
   field :image,                      type: String
   field :encrypted_phone_id,         type: String, default: ""
   field :auth_token,                 type: String
-  field :is_verified_by_sms,      type: Boolean, default: false
+  field :is_verified_by_sms,         type: Boolean, default: false
   field :sms_serial_key,             type: String, default: ""
+  field :sms_serial_key_sent_at,     type: DateTime, default: ""
+  field :restrict_sms_sent_time,     type: DateTime, default: ""
+  field :total_sms_sent,             type: Integer, default: 0
+  field :restrict_sms_count,         type: Integer, default: 0
   field :encrypted_password,         type: String, default: ""
 
   ## Recoverable
@@ -86,6 +90,33 @@ class User
   # for devise remove email validation
   def email_changed?
     false
+  end
+
+  def send_sms_key
+    can_send_sms = sms_limit_check
+    raise "No more sms now" unless can_send_sms
+    account_sid = Rails.application.secrets.twilio_account_sid
+    auth_token = Rails.application.secrets.twilio_auth_token
+    client = Twilio::REST::Client.new account_sid, auth_token
+    ss = client.account.messages.create(
+        :from => '(847) 380-8587',
+        :to => '+919900431166',
+        :body => self.sms_serial_key
+     )
+    self.sms_serial_key_sent_at = Time.now
+    self.restrict_sms_sent_time = Time.now + 60.minutes
+    self.total_sms_sent = self.total_sms_sent += 1
+    self.restrict_sms_count = self.restrict_sms_count += 1
+    self.save
+  end
+
+  def sms_limit_check
+   return true unless self.restrict_sms_sent_time
+   if(self.restrict_sms_sent_time < Time.now  && self.restrict_sms_count < 3)
+     true
+   else
+    false
+   end
   end
 
   private

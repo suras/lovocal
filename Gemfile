@@ -72,6 +72,8 @@ gem 'capistrano-rails', '~> 1.0.0'
 
 gem 'capistrano-rvm'
 
+gem 'twilio-ruby', '~> 3.11'
+
 
 group :development, :test do
   gem 'spring-commands-rspec'

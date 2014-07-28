@@ -30,6 +30,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   
   def existing_user
     if(@user.update_attributes(sms_serial_key: ""))
+      @user.send_sms_key
       render json: @user
     else
       render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]  
@@ -39,6 +40,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create_new_user
     @user = User.new(user_create_params)
     if(@user.save)
+      @user.send_sms_key
       render json: @user
     else
       render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]

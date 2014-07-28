@@ -13,6 +13,11 @@ class UsersController < ApplicationController
     render json: @user, serializer: UserProfileSerializer, root: "user"
   end
 
+  # GET /users/new
+  def new
+    @user = User.new
+  end
+
   # POST '/users'
   def create
     @user = User.where(mobile_number: params[:user][:mobile_number]).first
@@ -24,22 +29,55 @@ class UsersController < ApplicationController
   end
   
   def existing_user
-    if(@user.update_attributes(sms_serial_key: ""))
-      render json: @user
-    else
-      render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]  
+    respond_to do |format|
+      if(@user.update_attributes(sms_serial_key: ""))
+        # @user.send_sms_key
+        format.js {render :new}
+      else
+        format.html { render :new }
+      end
     end
   end
 
   def create_new_user
     @user = User.new(user_create_params)
+    respond_to do |format|
     if(@user.save)
-      render json: @user
+      # @user.send_sms_key
+      format.js {render :new}
     else
-      render json: {error_code: Code[:error_rescue], error_message: @user.errors.full_messages}, status: Code[:status_error]
+      format.html { render :new }
     end
   end
- 
+
+
+  # POST /login/ 
+  def create_login
+
+  end
+
+  # GET /login/new
+  def new_login
+
+  end
+
+  # POST /users/create_password
+  def create_password
+    @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key]).first
+    respond_to do |format|
+      if(@user.present?)
+        @user.is_verified_by_sms = true
+        @user.restrict_sms_count = 0
+        @user.first_name = params[:user][:first_name]
+        @user.first_name = params[:user][:last_name]
+        @user.password = params[:user][:password]
+        @user.save
+        format.html { redirect_to root_url, notice: 'Signed In Successfully' }
+      else
+        format.html { render :create_new_password }
+      end
+  end
+
   # POST /verify_sms_key 
   def verify_sms_key
     @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key]).first
@@ -47,6 +85,7 @@ class UsersController < ApplicationController
       @user.is_verified_by_sms = true
       @user.auth_token = ""
       @user.encrypted_phone_id = params[:user][:phone_id]
+      @user.restrict_sms_count = 0
       @user.save
       render json: @user, serializer: UserAuthSerializer, root: "user"
     else
@@ -97,12 +136,7 @@ class UsersController < ApplicationController
     @services = @user.services
     render json: @services, root: :services
   end
- 
- # GET /key
-  def get_key
-    user = User.where(mobile_number: params[:mobile_number]).first
-    render json: user.to_json
-  end
+
 
   private
     # Never trust parameters from the scary internet, only allow the white list through.
