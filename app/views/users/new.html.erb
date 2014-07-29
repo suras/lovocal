@@ -1,25 +1,27 @@
+<br>
+<div class="col-md-6 col-md-offset-3 text-center">
+  <div class="user_form">
+    <div class="user_form_errors"></div>
+      <%= form_for @user, remote: true do |f| %>
+        <% if @user.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
-<div class="user_form">
-<div class="user_form_errors"></div>
-  <%= form_for @user, remote: true do |f| %>
-    <% if @user.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-        <ul>
-        <% @user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
+            <ul>
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
         <% end %>
-        </ul>
-      </div>
-    <% end %>
-    <br>
-    <div class="field">
-      <%= f.label :"Mobile Number" %><br>
-      <%= f.text_field :mobile_number %>
-    </div><br>
-    <div class="actions">
-      <%= f.submit %>
-    </div>
-  <% end %>
+        <br>
+        <div class="field">
+          <%= f.label :"Enter Mobile Number" %><br>
+          <%= f.text_field :mobile_number %>
+        </div><br>
+        <div class="actions">
+          <%= f.submit %>
+        </div>
+      <% end %>
+  </div>
 </div>

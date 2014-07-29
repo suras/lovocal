@@ -47,12 +47,12 @@ class Api::V1::ServicesController < Api::V1::BaseController
   # POST /services/:service_id/service_images
   def create_images
     @service = current_user.services.find(params[:service_id])
-    images = JSON.parse(params[:service_image])
-    images["image"].each do |image|
+    # images = JSON.parse(params[:service_image])
+    # params[:service_images].each do |image|
       s_img = @service.service_images.create
-      s_img.image = image
+      s_img.image = params[:service_images]
       s_img.save
-    end
+    # end
     render json: @service.service_images
   rescue => e
     render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
