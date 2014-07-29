@@ -49,7 +49,7 @@ class Api::V1::ServicesController < Api::V1::BaseController
     @service = current_user.services.find(params[:service_id])
     images = JSON.parse(params[:service_image])
     images["image"].each do |image|
-      s_img = @service.service_images.new
+      s_img = @service.service_images.create
       s_img.image = image
       s_img.save
     end
