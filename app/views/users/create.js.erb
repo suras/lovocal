@@ -1,0 +1,6 @@
+
+<% if @user.errors.present?%>
+   $(".user_form_errors").html("<%= @user.errors.full_messages %>")
+<% else %>
+  $(".user_form").html("<%= j render partial: 'create_new_password' %>")
+<% end %>

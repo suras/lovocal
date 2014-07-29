@@ -1,5 +1,6 @@
 class PublicController < ApplicationController
-		def index
-			  render text: "Welcome To Yelacity"
-		end
+  
+  def index
+  end
+
 end

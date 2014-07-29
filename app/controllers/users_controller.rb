@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: [:show, :create, :verify_sms_key, :get_key]
+  before_action :authenticate_user!, except: [:show, :new, :new_login, 
+    :create, :verify_sms_key, :get_key, :create_password, :create_login]
  
   # GET /user_profile
   def current_user_profile
@@ -31,10 +32,11 @@ class UsersController < ApplicationController
   def existing_user
     respond_to do |format|
       if(@user.update_attributes(sms_serial_key: ""))
+        # @user.sms_serial_key = ""
         # @user.send_sms_key
-        format.js {render :new}
+        format.js {render "create"}
       else
-        format.html { render :new }
+        format.js { render "create" }
       end
     end
   end
@@ -42,28 +44,30 @@ class UsersController < ApplicationController
   def create_new_user
     @user = User.new(user_create_params)
     respond_to do |format|
-    if(@user.save)
-      # @user.send_sms_key
-      format.js {render :new}
-    else
-      format.html { render :new }
+      if(@user.save)
+        # @user.send_sms_key
+        # @user.sms_serial_key = ""
+        format.js {render "create"}
+      else
+        format.js { render "create" }
+      end
     end
   end
-
+  
   # GET /users/login/new
   def new_login
 
   end
 
-  # POST /users//login/ 
+  # POST /users/login/ 
   def create_login
-    @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    @user = User.where(mobile_number: params[:mobile_number]).first
     respond_to do |format|
-      if(@user && @user.valid_password?(params[:user][:password])
-        sign_in @user
+      if(@user && @user.valid_password?(params[:password]))
+        sign_in @user, store: true
         format.html { redirect_to root_url, notice: 'Signed In Successfully' }
       else
-        format.html { render :new_login }
+        format.html { redirect_to new_user_login_path, notice: 'Invalid Login Details' }
       end
     end
   end
@@ -79,11 +83,13 @@ class UsersController < ApplicationController
         @user.first_name = params[:user][:last_name]
         @user.password = params[:user][:password]
         @user.save
-        sign_in @user
+        sign_in @user, store: true
         format.html { redirect_to root_url, notice: 'Signed Up Successfully' }
       else
-        format.html { render :create_new_password }
+        @user = User.new
+        format.html { render partial: "create_new_password" }
       end
+    end 
   end
 
   # POST /verify_sms_key 
@@ -101,15 +107,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # POST '/login'
-  def login
-    @user = User.where(mobile_number: params[:user][:mobile_number], sms_serial_key: params[:user][:sms_serial_key])
-    if(@user.present?)  
-      render json: @user
-    else
-      render json: {error_code: Code[:error_rescue], error_message: "User Not Present"}, status: Code[:status_error]
-    end
-  end
 
   # PUT/PATCH '/users/id'
   def update

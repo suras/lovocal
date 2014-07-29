@@ -13,7 +13,6 @@ class User
   field :last_name,                  type: String
   field :description,                type: String
   field :mobile_number,              type: String, default: ""
-  field :image,                      type: String
   field :encrypted_phone_id,         type: String, default: ""
   field :auth_token,                 type: String
   field :is_verified_by_sms,         type: Boolean, default: false
@@ -29,7 +28,7 @@ class User
   # field :reset_password_sent_at, type: Time
 
   ## Rememberable
-  # field :remember_created_at, type: Time
+   field :remember_created_at, type: Time
 
   ## Trackable
   field :sign_in_count,      type: Integer, default: 0
@@ -112,11 +111,17 @@ class User
 
   def sms_limit_check
    return true unless self.restrict_sms_sent_time
-   if(self.restrict_sms_sent_time < Time.now  && self.restrict_sms_count < 3)
+    if(self.restrict_sms_sent_time < Time.now  && self.restrict_sms_count < 3)
      true
-   else
+    else
     false
-   end
+    end
+  end
+
+  # for mongoid $oid issue with session serialization
+  def self.serialize_from_session(key, salt)
+    record = to_adapter.get(key[0]['$oid'])
+    record if record && record.authenticatable_salt == salt
   end
 
   private

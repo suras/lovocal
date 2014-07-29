@@ -1,0 +1,16 @@
+
+<div class="user_login_form">
+  <%= form_tag(user_login_path, method: :post) do%>
+    <div class="field">
+      <%= label_tag :"Mobile Number" %><br>
+      <%= text_field_tag :mobile_number %>
+    </div>
+    <div class="field">
+      <%= label_tag :"Password" %><br>
+      <%= text_field_tag :password %>
+    </div>
+    <div class="actions">
+      <%= submit_tag("login") %>
+    </div>
+  <% end %>
+</div>
