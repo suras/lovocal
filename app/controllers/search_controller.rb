@@ -19,7 +19,7 @@ class SearchController < ApplicationController
   	end
   	respond_to do |format|
       format.html { redirect_to search_url}
-      format.json { json: @services, status: :ok}
+      format.json { render @services, status: :ok}
     end 
   end
 

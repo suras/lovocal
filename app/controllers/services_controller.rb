@@ -8,10 +8,8 @@ before_action :authenticate_user!
     respond_to do |format|
       if @service.save
         format.html { redirect_to @service, notice: 'service was successfully created.' }
-        format.json { render :show, status: :created, location: @service }
       else
         format.html { render :new }
-        format.json { render json: @service.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -34,10 +32,8 @@ before_action :authenticate_user!
     respond_to do |format|
       if @service.update(service_params)
         format.html { redirect_to @service, notice: 'service was successfully updated.' }
-        format.json { render :show, status: :ok, location: @service }
       else
         format.html { render :edit }
-        format.json { render json: @service.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -47,7 +43,6 @@ before_action :authenticate_user!
     @service = current_user.services.find(params[:id])
     respond_to do |format|
       format.html { redirect_to services_url, notice: 'Service was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -57,7 +52,6 @@ before_action :authenticate_user!
     @service.service_images.where(:_id.in => params[:service_image][:ids]).destroy   
     respond_to do |format|
       format.html { redirect_to @service, notice: 'Images was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -72,12 +66,10 @@ before_action :authenticate_user!
     end
     respond_to do |format|
       format.html { redirect_to @service, notice: 'Images was successfully created.' }
-      format.json { json: @service, status: :ok, location: @service  }
     end
   rescue => e
   	respond_to do |format|
       format.html { render :create_new_images}
-      format.json { json: @service.errors, status: :unprocessable_entity}
     end
   end
 
@@ -102,10 +94,8 @@ before_action :authenticate_user!
     respond_to do |format|
       if(@service_timing.save)
         format.html { redirect_to @service_timing, notice: 'service was successfully updated.' }
-        format.json { render :show, status: :ok, location: @service }
       else
         format.html { render :timing }
-        format.json { render json: @service_timing.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -116,7 +106,6 @@ before_action :authenticate_user!
     avg = @service.avg_rating
   	respond_to do |format|
       format.html { redirect_to @service}
-      format.json { json: avg, status: :ok}
     end 
   end
 
