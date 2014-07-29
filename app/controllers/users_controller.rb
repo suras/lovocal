@@ -32,7 +32,8 @@ class UsersController < ApplicationController
   def existing_user
     respond_to do |format|
       if(@user.update_attributes(sms_serial_key: ""))
-        # @user.sms_serial_key = ""
+        @user.sms_serial_key = ""
+        @user.password = ""
         # @user.send_sms_key
         format.js {render "create"}
       else
@@ -46,7 +47,8 @@ class UsersController < ApplicationController
     respond_to do |format|
       if(@user.save)
         # @user.send_sms_key
-        # @user.sms_serial_key = ""
+         @user.sms_serial_key = ""
+         @user.password = ""
         format.js {render "create"}
       else
         format.js { render "create" }

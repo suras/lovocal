@@ -16,6 +16,7 @@ class ListingCategoriesController < ApplicationController
         format.html { render :new }
         format.json { render json: @listing_category.errors, status: :unprocessable_entity }
       end
+    end
   end
 
   #POST /listing_category_children/:id
@@ -31,7 +32,8 @@ class ListingCategoriesController < ApplicationController
     	  format.html { render :new }
     	  format.json { render json: @listing_children_category.errors, status: :unprocessable_entity }
     	end
-  end
+   end
+ end
 
   # GET /listing_category_children
   def show_listing_category_children
