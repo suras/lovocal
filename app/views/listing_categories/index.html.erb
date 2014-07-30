@@ -1,0 +1,15 @@
+<!-- 1st row verticaly centered text in the square columns -->
+<%= stylesheet_link_tag 'listing/category_listing', 'data-turbolinks-track' => true %>
+<% @listing_categories.each do |cat| %>
+  <div class="square">
+     <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  <%= raw get_image(cat) %>
+                  <center><a href="<%=search_url(:"search[listing_category]" => cat.name)%>"><%= cat.name %></a></center>
+              </div>
+          </div>
+      </div>
+  </div>
+<% end %>
+

@@ -60,6 +60,12 @@ class Service
     (sum/count)*100/100
   end 
 
+  def image
+    service_image = self.service_images.first
+    return service_image.image.url if service_image.present? 
+    ActionController::Base.helpers.asset_path("fallback/" + ["v1", "default.png"].compact.join('_'))
+  end
+
   def update_avg_rating
     self.rating = avg_rating
     self.save

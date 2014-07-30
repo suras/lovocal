@@ -1,0 +1,30 @@
+<%= stylesheet_link_tag 'listing/service_listing', 'data-turbolinks-track' => true %>
+<%= javascript_include_tag 'services/service_listing', 'data-turbolinks-track' => true %>
+<br>
+<div class="container">
+<h4> Service Listing<%= " > "+@category.name if @category.present? %></h4>
+    <div id="products" class="row list-group">
+        <% @services.each do |service| %>
+          <div class="item  col-xs-4 col-lg-4">
+              <div class="thumbnail">
+                  <img class="group list-group-image" src="<%=service.image %>" alt="" />
+                  <div class="caption">
+                      <h4 class="group inner list-group-item-heading">
+                          <%=service.business_name %></h4>
+                      <p class="group inner list-group-item-text">
+                       <%= truncate(service.business_name, length: 17, separator: ' ') %>                      <div class="row">
+                          <div class="col-xs-12 col-md-6">
+                              <p class="lead">
+                                  <%=service.city%></p>
+                          </div>
+                          <div class="col-xs-12 col-md-6">
+                              <a class="btn btn-success" href="#">Chat</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        <% end %>
+    </div>
+</div>
+

@@ -1,8 +1,8 @@
 <%# add navigation links to this file %>
-<li><a href= "/">Categories</a></li>
+<li><%= link_to "Category", listing_categories_path() %></li>
 <% if user_signed_in? %>
-<li><%= link_to "Sign out", destroy_user_session_path, :method => :delete %></li>
+  <li><%= link_to "Sign out", destroy_user_session_path, :method => :delete %></li>
 <% else %>
-<li><%= link_to "Sign up", new_user_path() %> </li>
-<li><%= link_to "Sign in", new_user_login_path %></li>
+  <li><%= link_to "Sign up", new_user_path() %> </li>
+  <li><%= link_to "Sign in", new_user_login_path %></li>
 <% end %>

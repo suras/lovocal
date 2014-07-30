@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   post "users", to: "users#create", as: :users
   put "users/:id", to: "users#update"
   get "users/:id", to: "users#edit"
+  get "search", to: "search#search", as: :search
+  resources :listing_categories
   devise_for :users
 
 
