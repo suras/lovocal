@@ -15,18 +15,14 @@ class Chat
                               params[:receiver_id], params[:receiver_type])
     if(can_send_chat[:can_send])
        chat = Chat.save_chat(params)  
-       params[:receiver_id] = chat[:receiver_id]
        chat_id = chat[:chat_id]
      else
        chat_id = ""
-       params[:receiver_id] = false
-       params[:chat][:message] = can_send_chat[:message]
+       chat[:receiver_obj] = false
+       params[:message] = can_send_chat[:message]
      end
-    return  {message: params[:message], chat_id: chat_id, 
-                sent_time: params[:sent_time], sender_type: params[:sender_type],
-                  sender_id: params[:sender_id], receiver_id: params[:receiver_id],
-                  receiver_type: params[:receiver_type], 
-                  list_cat_id: params[:list_cat_id]
+    return  {message: params[:message], chat_id: chat_id,sender_obj: chat[:sender_obj], 
+                receiver_obj: chat[:receiver_obj]
                 }  
   end
   
@@ -38,7 +34,7 @@ class Chat
     	 receiver_id: receiver.id.to_s, sender_type: sender.class.to_s,
     	 receiver_type: receiver.class.to_s)
     Chat.save_chat_logs_and_response(sender, receiver, chat.id.to_s, params[:reply_id], params[:list_cat_id])
-    return {sender_id: sender.id.to_s, receiver_id: receiver.id.to_s,
+    return {sender_obj: sender, receiver_obj: receiver,
      chat_id: chat.id.to_s}
   rescue => e
     raise "something went wrong #{e}"  

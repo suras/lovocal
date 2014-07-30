@@ -74,6 +74,8 @@ gem 'capistrano-rvm'
 
 gem 'twilio-ruby', '~> 3.11'
 
+gem 'private_pub'
+
 
 group :development, :test do
   gem 'spring-commands-rspec'

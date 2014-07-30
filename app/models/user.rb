@@ -118,6 +118,10 @@ class User
     end
   end
 
+  def online?
+    updated_at > 10.minutes.ago
+  end
+
   # for mongoid $oid issue with session serialization
   def self.serialize_from_session(key, salt)
     record = to_adapter.get(key[0]['$oid'])

@@ -17,4 +17,5 @@
 //= require angular
 //= require angular-animate
 //= require angular-resource
+//= require private_pub
 //= require_tree .

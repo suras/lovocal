@@ -7,6 +7,13 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
+    <script type="text/javascript">
+    <%  if user_signed_in?  %>
+      PrivatePub.subscribe("/messages/<%= current_user.id.to_s %>", function(data) {
+      $('<p></p>').html(data).appendTo('#chat-box');
+      });
+   <% end %>
+   </script>
   </head>
   <body>
     <header>
