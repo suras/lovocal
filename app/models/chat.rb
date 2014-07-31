@@ -9,7 +9,8 @@ class Chat
   field :receiver_type, type: String
   field :receiver_id, type: String
   field :listing_category, type: String
-
+  
+  belongs_to :chat_query
   def self.set_message(params)
      can_send_chat = Chat.can_send_chat(params[:sender_id],params[:sender_type],
                               params[:receiver_id], params[:receiver_type])
@@ -33,8 +34,15 @@ class Chat
     chat =  Chat.create!(message: params[:message], sender_id: sender.id.to_s, 
     	 receiver_id: receiver.id.to_s, sender_type: sender.class.to_s,
     	 receiver_type: receiver.class.to_s)
+    if(params[:chat_query_id].present?)
+      return unless ChatQuery.where(_id: params[:chat_query_id]).first
+      chat.chat_query_id = BSON::ObjectId.from_string(params[:chat_query_id])
+      chat.save
+    else
+      params[:chat_query_id] = ""
+    end
     Chat.save_chat_logs_and_response(sender, receiver, chat.id.to_s, params[:reply_id], params[:list_cat_id])
-    return {sender_obj: sender, receiver_obj: receiver,
+    return {sender_obj: sender, receiver_obj: receiver, chat_query_id: params[:chat_query_id],
      chat_id: chat.id.to_s}
   rescue => e
     raise "something went wrong #{e}"  

@@ -55,6 +55,7 @@ class User
   has_many :chat_logs
   has_many :user_chat_logs
   has_many :service_ratings
+  has_many :chat_queries
   
   validates :mobile_number, presence: true,
                       numericality: true,
@@ -79,6 +80,10 @@ class User
   def ensure_password
     return if self.password.present?
     self.password = SecureRandom.random_number(8888888888)
+  end
+
+  def image_url
+    Rails.application.secrets.app_url+self.image.url
   end
 
   # for devise remove email validation

@@ -66,6 +66,13 @@ class Service
     ActionController::Base.helpers.asset_path("fallback/" + ["v1", "default.png"].compact.join('_'))
   end
 
+  def image_url
+    path = Rails.application.secrets.app_url
+    service_image = self.service_images.first
+    return path+service_image.image.url if service_image.present? 
+    path+ActionController::Base.helpers.asset_path("fallback/" + ["v1", "default.png"].compact.join('_'))
+  end
+
   def update_avg_rating
     self.rating = avg_rating
     self.save

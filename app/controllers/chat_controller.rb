@@ -21,7 +21,9 @@ before_filter :authenticate_user!
                 sent_time: params[:sent_time], sender_type: params[:sender_type],
                   sender_id: params[:sender_id], receiver_id: params[:receiver_id],
                   receiver_type: params[:receiver_type], 
-                  list_cat_id: params[:list_cat_id]
+                  list_cat_id: params[:list_cat_id], chat_query_id: hash_obj[:chat_query_id],
+                  sender_image: sender.image_url, receiver_image: receiver.image_url,
+                  sender_name: sender.name, receiver_name: receiver.name
                 }  
       rescue => e
         params[:receiver_id] = nil
@@ -71,6 +73,7 @@ before_filter :authenticate_user!
     if(@services.blank?)
       render json: {error_message: "no services or u have messaged all the existing services"}, status: Code[:status_error]
     else
+      @user_chat_query = ChatQuery.create(query_title: @message, query_category: @list_cat_id)
       send_service_messages
       render json: {}
     end
@@ -88,6 +91,7 @@ before_filter :authenticate_user!
       params[:chat][:chat_id] = ""
       params[:chat][:list_cat_id] = @list_cat_id
       params[:chat][:sent_time] = @sent_time
+      params[:chat][:chat_query_id] = @user_chat_query.id.to_s
       ampq(params[:chat])
     end
   end

@@ -3,7 +3,7 @@ class UserSerializer < ActiveModel::Serializer
              :image_url, :description, :mobile_number
 
   def image_url
-    Rails.application.secrets.app_url+object.image.url
+    object.image_url
   end
 
   def id
