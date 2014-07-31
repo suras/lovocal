@@ -24,8 +24,8 @@ class Chat
        params[:message] = can_send_chat[:message]
      end
     return  {message: params[:message], chat_id: chat_id,sender_obj: chat[:sender_obj], 
-                receiver_obj: chat[:receiver_obj], no_error: no_error
-                }  
+            receiver_obj: chat[:receiver_obj], no_error: no_error,
+            chat_query_id: chat[:chat_query_id], chat_query_message: chat[:chat_query_message] }  
   end
   
   def self.save_chat(params)
@@ -46,7 +46,7 @@ class Chat
       chat_query_message = ""
     end
     Chat.save_chat_logs_and_response(sender, receiver, chat.id.to_s, params[:reply_id], params[:list_cat_id])
-    return {sender_obj: sender, receiver_obj: receiver, chat_query_id: params[:chat_query_id],
+   {sender_obj: sender, receiver_obj: receiver, chat_query_id: params[:chat_query_id],
      chat_id: chat.id.to_s, chat_query_message: chat_query_message}
   rescue => e
     raise "something went wrong #{e}"  
@@ -56,7 +56,9 @@ class Chat
     receiver_log = receiver.chat_logs.where(chat_id: chat_id).first_or_create!
     # sender_log = sender.chat_logs.where(chat_id: chat_id).first_or_create!
     if(sender.class.to_s == "User")
-       sender.user_chat_logs.where(service_id: receiver.id.to_s, list_cat_id: list_cat_id).first_or_create!
+       u_log = sender.user_chat_logs.where(service_id: receiver.id.to_s, list_cat_id: list_cat_id).first_or_create!
+       u_log.send_status = false
+       u_log.save
     else
         res_log = sender.chat_response_logs.where(chat_id: reply_id).first
       if(res_log.present?)

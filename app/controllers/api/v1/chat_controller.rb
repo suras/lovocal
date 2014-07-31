@@ -21,7 +21,8 @@ class Api::V1::ChatController < Api::V1::BaseController
         message: hash_obj[:message], chat_id: hash_obj[:chat_id], 
         list_cat_id: params[:list_cat_id], chat_query_id: hash_obj[:chat_query_id],
         server_sent_time: Time.now, chat_query_message: hash_obj[:chat_query_message],
-        sender: {sent_time: params[:sent_time], sender_type: params[:sender_type],
+        sent_time: params[:sent_time],
+        sender: {sender_type: params[:sender_type],
         sender_id: params[:sender_id], sender_image: sender.image_url, 
         sender_name: sender.name}, receiver: {receiver_image: receiver.image_url, 
         receiver_name: receiver.name, receiver_type: params[:receiver_type],
@@ -75,7 +76,11 @@ class Api::V1::ChatController < Api::V1::BaseController
     if(@services.blank?)
       render json: {error_message: "no services or u have messaged all the existing services"}, status: Code[:status_error]
     else
-      @user_chat_query = ChatQuery.create(query_title: @message, query_category: @list_cat_id)
+      @user_chat_query = ChatQuery.new
+      @user_chat_query.query_category = @list_cat_id
+      @user_chat_query.query_title = @message
+      @user_chat_query.user_id = current_user.id
+      @user_chat_query.save
       send_service_messages
       render json: {}
     end

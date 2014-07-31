@@ -85,7 +85,11 @@ class Service
   def self.get_services_for_chat(longitude, latitude, distance, list_cat_id, user_id)
     user = User.where(_id: user_id).first
     raise "user not found" if user.blank?
-    user_chat_logs = user.user_chat_logs
+    user_chat_logs = user.user_chat_logs.where(send_status: true)
+    if(user_chat_logs.first.blank?)
+      user.user_chat_logs.update_all(send_status: true)
+      user_chat_logs = []
+    end
     present_service_ids = user_chat_logs.map{|c| c.service_id}
     services = Service.limit(5).where(:list_cat_ids  => list_cat_id).not_in(:_id => present_service_ids).geo_near([latitude.to_f, longitude.to_f]).max_distance(distance.to_i)
     return services.to_a

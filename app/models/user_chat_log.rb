@@ -5,6 +5,7 @@ class UserChatLog
 
   field :service_id, type: String
   field :list_cat_id, type: String
+  field :send_status, type: Boolean, default: true
 
   belongs_to :user
 
