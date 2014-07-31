@@ -9,8 +9,11 @@ class Chat
   field :receiver_type, type: String
   field :receiver_id, type: String
   field :listing_category, type: String
-  
+ 
   belongs_to :chat_query
+  belongs_to :user
+  belongs_to :service
+
   def self.set_message(params)
      can_send_chat = Chat.can_send_chat(params[:sender_id],params[:sender_type],
                               params[:receiver_id], params[:receiver_type])
@@ -32,9 +35,12 @@ class Chat
   	sender = Chat.get_chatter(params[:sender_id], params[:sender_type])
   	receiver = Chat.get_chatter(params[:receiver_id], params[:receiver_type])
     raise "Chatter not found" unless sender.present? && receiver.present?
+    chatter = get_chatter_ids(sender, receiver)
+    user_id = chatter[:user_id]
+    service_id = chatter[:service_id]
     chat =  Chat.create!(message: params[:message], sender_id: sender.id.to_s, 
     	 receiver_id: receiver.id.to_s, sender_type: sender.class.to_s,
-    	 receiver_type: receiver.class.to_s)
+    	 receiver_type: receiver.class.to_s, user_id: user_id, service_id: service_id)
     if(params[:chat_query_id].present?)
       chat_query = ChatQuery.where(_id: params[:chat_query_id]).first
       return unless chat_query
@@ -91,6 +97,24 @@ class Chat
     end
   rescue => e
     raise "something went wrong #{e}" 
+  end
+
+  def self.get_chatter_ids(sender, receiver)
+    if(sender.class.to_s.downcase == "user")
+      user_id = sender.id
+      service_id = receiver.id
+    else
+      user_id = receiver.id
+      service_id = sender.id
+    end
+    if(receiver.class.to_s.downcase == "user")
+      user_id = receiver.id
+      service_id = sender.id
+    else
+      user_id = sender.id
+      service_id = receiver.id
+    end
+    return {user_id: user_id, service_id: service_id}
   end
 
   def self.get_chatter(id, type)

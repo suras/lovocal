@@ -56,6 +56,7 @@ class User
   has_many :user_chat_logs
   has_many :service_ratings
   has_many :chat_queries
+  has_many :chats
   
   validates :mobile_number, presence: true,
                       numericality: true,

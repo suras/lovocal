@@ -120,10 +120,6 @@ class ChatController < ApplicationController
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
-  def chats
-    
-  end
-
   # POST /chat/acknowledge
   def chat_acknowledge
     @chat = Chat.find(params[:chat][:chat_id]) 

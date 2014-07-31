@@ -36,6 +36,7 @@ class Service
   has_many :chat_logs
   has_many :chat_response_logs
   has_many :service_ratings
+  has_many :chats
 
   validates :business_name, :description, :latitude, :longitude,
             :city, :country, :address, presence: true

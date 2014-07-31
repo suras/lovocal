@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   put "users/:id", to: "users#update"
   get "users/:id", to: "users#edit"
   get "search", to: "search#search", as: :search
+  get "/users/services/chats", to: "users#user_services_chat_list"
+  get "/users/services/:service_id/chats", to: "users#user_services_chat_list"
   resources :listing_categories
   devise_for :users
 
