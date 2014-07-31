@@ -4,8 +4,7 @@ class Api::V1::ChatController < Api::V1::BaseController
  # POST /chat
   def send_message
     ampq(params[:chat])
-   end
-
+  end
 
   def ampq(params)
     EM.next_tick {
@@ -14,18 +13,37 @@ class Api::V1::ChatController < Api::V1::BaseController
       channel  = AMQP.channel
       channel.auto_recovery = true
       begin
-        chat_hash = Chat.set_message(params)
+        hash_obj = Chat.set_message(params)
+        sender = hash_obj[:sender_obj]
+        receiver = hash_obj[:receiver_obj]
+        no_error = hash_obj[:no_error]
+        chat_hash = {
+        message: hash_obj[:message], chat_id: hash_obj[:chat_id], 
+        list_cat_id: params[:list_cat_id], chat_query_id: hash_obj[:chat_query_id],
+        server_sent_time: Time.now, chat_query_message: hash_obj[:chat_query_message],
+        sender: {sent_time: params[:sent_time], sender_type: params[:sender_type],
+        sender_id: params[:sender_id], sender_image: sender.image_url, 
+        sender_name: sender.name}, receiver: {receiver_image: receiver.image_url, 
+        receiver_name: receiver.name, receiver_type: params[:receiver_type],
+        receiver_id: params[:receiver_id]}      
+                }  
       rescue => e
-        params[:receiver_id] = nil
+        no_error = false
         params[:message] = "something went wrong. unable to send chat error: #{e}"
         chat_hash = params
       end
-      if(chat_hash[:receiver_id])
-        receiver_exchange = channel.fanout(chat_hash[:receiver_id]+"exchange")
+      if(no_error)
+        receiver_exchange = channel.fanout(receiver.id.to_s+"exchange")
         receiver_exchange.publish(chat_hash.to_json)
+        if(params[:receiver_type].downcase == "user" && receiver.online?)
+           PrivatePub.publish_to "/messages/#{receiver.id.to_s}", :chat => chat_hash
+        end
       end
-      sender_exchange = channel.fanout(chat_hash[:sender_id]+"exchange") 
+      sender_exchange = channel.fanout(sender.id.to_s+"exchange") 
       sender_exchange.publish(chat_hash.to_json)
+      if(params[:sender_type].downcase == "user")
+        PrivatePub.publish_to "/messages/#{sender.id.to_s}", :chat => chat_hash
+      end
       connection.on_tcp_connection_loss do |connection, settings|
         # reconnect in 10 seconds, without enforcement
         connection.reconnect(false, 10)
@@ -57,6 +75,7 @@ class Api::V1::ChatController < Api::V1::BaseController
     if(@services.blank?)
       render json: {error_message: "no services or u have messaged all the existing services"}, status: Code[:status_error]
     else
+      @user_chat_query = ChatQuery.create(query_title: @message, query_category: @list_cat_id)
       send_service_messages
       render json: {}
     end
@@ -74,6 +93,7 @@ class Api::V1::ChatController < Api::V1::BaseController
       params[:chat][:chat_id] = ""
       params[:chat][:list_cat_id] = @list_cat_id
       params[:chat][:sent_time] = @sent_time
+      params[:chat][:chat_query_id] = @user_chat_query.id.to_s
       ampq(params[:chat])
     end
   end
@@ -105,5 +125,4 @@ class Api::V1::ChatController < Api::V1::BaseController
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
-
 end

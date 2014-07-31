@@ -96,6 +96,10 @@ class User
     false
   end
 
+  def name
+    self.first_name
+  end
+
   def send_sms_key
     can_send_sms = sms_limit_check
     raise "No more sms now" unless can_send_sms

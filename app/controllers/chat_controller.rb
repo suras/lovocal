@@ -1,11 +1,10 @@
 class ChatController < ApplicationController
-before_filter :authenticate_user!
+  before_filter :authenticate_user!
 
  # POST /chat
   def send_message
     ampq(params[:chat])
   end
-
 
   def ampq(params)
     EM.next_tick {
@@ -34,16 +33,16 @@ before_filter :authenticate_user!
         chat_hash = params
       end
       if(no_error)
-        receiver_exchange = channel.fanout(chat_hash[:receiver_id]+"exchange")
+        receiver_exchange = channel.fanout(receiver.id.to_s+"exchange")
         receiver_exchange.publish(chat_hash.to_json)
         if(params[:receiver_type].downcase == "user" && receiver.online?)
            PrivatePub.publish_to "/messages/#{receiver.id.to_s}", :chat => chat_hash
         end
       end
-      sender_exchange = channel.fanout(chat_hash[:sender_id]+"exchange") 
+      sender_exchange = channel.fanout(sender.id.to_s+"exchange") 
       sender_exchange.publish(chat_hash.to_json)
       if(params[:sender_type].downcase == "user")
-           PrivatePub.publish_to "/messages/#{sender.id.to_s}", :chat => chat_hash
+        PrivatePub.publish_to "/messages/#{sender.id.to_s}", :chat => chat_hash
       end
       connection.on_tcp_connection_loss do |connection, settings|
         # reconnect in 10 seconds, without enforcement
