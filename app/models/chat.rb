@@ -17,13 +17,14 @@ class Chat
     if(can_send_chat[:can_send])
        chat = Chat.save_chat(params)  
        chat_id = chat[:chat_id]
+       no_error = true
      else
        chat_id = ""
-       chat[:receiver_obj] = false
+       no_error = false
        params[:message] = can_send_chat[:message]
      end
     return  {message: params[:message], chat_id: chat_id,sender_obj: chat[:sender_obj], 
-                receiver_obj: chat[:receiver_obj]
+                receiver_obj: chat[:receiver_obj], no_error: no_error
                 }  
   end
   
@@ -35,15 +36,18 @@ class Chat
     	 receiver_id: receiver.id.to_s, sender_type: sender.class.to_s,
     	 receiver_type: receiver.class.to_s)
     if(params[:chat_query_id].present?)
-      return unless ChatQuery.where(_id: params[:chat_query_id]).first
+      chat_query = ChatQuery.where(_id: params[:chat_query_id]).first
+      return unless chat_query
       chat.chat_query_id = BSON::ObjectId.from_string(params[:chat_query_id])
       chat.save
+      chat_query_message = chat_query.query_title
     else
       params[:chat_query_id] = ""
+      chat_query_message = ""
     end
     Chat.save_chat_logs_and_response(sender, receiver, chat.id.to_s, params[:reply_id], params[:list_cat_id])
     return {sender_obj: sender, receiver_obj: receiver, chat_query_id: params[:chat_query_id],
-     chat_id: chat.id.to_s}
+     chat_id: chat.id.to_s, chat_query_message: chat_query_message}
   rescue => e
     raise "something went wrong #{e}"  
   end

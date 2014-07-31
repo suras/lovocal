@@ -78,6 +78,10 @@ class Service
     self.save
   end
 
+  def name
+   self.business_name
+  end
+
   def self.get_services_for_chat(longitude, latitude, distance, list_cat_id, user_id)
     user = User.where(_id: user_id).first
     raise "user not found" if user.blank?

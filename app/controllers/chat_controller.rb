@@ -17,20 +17,23 @@ before_filter :authenticate_user!
         hash_obj = Chat.set_message(params)
         sender = hash_obj[:sender_obj]
         receiver = hash_obj[:receiver_obj]
-        chat_hash = {message: hash_obj[:message], chat_id: hash_obj[:chat_id], 
-                sent_time: params[:sent_time], sender_type: params[:sender_type],
-                  sender_id: params[:sender_id], receiver_id: params[:receiver_id],
-                  receiver_type: params[:receiver_type], 
-                  list_cat_id: params[:list_cat_id], chat_query_id: hash_obj[:chat_query_id],
-                  sender_image: sender.image_url, receiver_image: receiver.image_url,
-                  sender_name: sender.name, receiver_name: receiver.name
+        no_error = hash_obj[:no_error]
+        chat_hash = {
+        message: hash_obj[:message], chat_id: hash_obj[:chat_id], 
+        list_cat_id: params[:list_cat_id], chat_query_id: hash_obj[:chat_query_id],
+        server_sent_time: Time.now, chat_query_message: hash_obj[:chat_query_message],
+        sender: {sent_time: params[:sent_time], sender_type: params[:sender_type],
+        sender_id: params[:sender_id], sender_image: sender.image_url, 
+        sender_name: sender.name}, receiver: {receiver_image: receiver.image_url, 
+        receiver_name: receiver.name, receiver_type: params[:receiver_type],
+        receiver_id: params[:receiver_id]}      
                 }  
       rescue => e
-        params[:receiver_id] = nil
+        no_error = false
         params[:message] = "something went wrong. unable to send chat error: #{e}"
         chat_hash = params
       end
-      if(hash_obj[:receiver_obj] && params[:receiver_id])
+      if(no_error)
         receiver_exchange = channel.fanout(chat_hash[:receiver_id]+"exchange")
         receiver_exchange.publish(chat_hash.to_json)
         if(params[:receiver_type].downcase == "user" && receiver.online?)
