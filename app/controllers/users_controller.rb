@@ -145,17 +145,13 @@ class UsersController < ApplicationController
   end
 
   # GET /users/services/chats
-  def user_services_chat_list
-    @chats = current_user.chats.includes(:service).group_by{|c| c.service_id.to_s }
-    render :text => @chats.each_pair{|k, v| k}
-    # pending
+  def services_chat_list
+    @services = current_user.chatted_services
   end
 
   # GET /users/services/:service_id/chats
-  def user_service_chats
-    @chats = current_user.chats.where(service_id: params[:service_id])
-    render :text => @chats.each_pair{|k| k}
-    # pending
+  def service_chats
+    @chats = current_user.chats.where(service_id: params[:service_id]).asc(:created_at)
   end
 
 

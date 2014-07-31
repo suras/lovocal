@@ -9,4 +9,8 @@ class UserChatLog
 
   belongs_to :user
 
+  def service
+    Service.where(_id: self.service_id).first
+  end
+
 end

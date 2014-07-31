@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   root to: "public#index"
   post 'users/login', to: "users#create_login", as: :user_login
   get 'users/login/new', to: "users#new_login", as: :new_user_login
@@ -9,8 +10,8 @@ Rails.application.routes.draw do
   put "users/:id", to: "users#update"
   get "users/:id", to: "users#edit"
   get "search", to: "search#search", as: :search
-  get "/users/services/chats", to: "users#user_services_chat_list"
-  get "/users/services/:service_id/chats", to: "users#user_services_chat_list"
+  get "/users/services/chats", to: "users#services_chat_list", as: :services_chat_list
+  get "/users/services/:service_id/chats", to: "users#service_chats", as: :service_chats
   resources :listing_categories
   devise_for :users
 

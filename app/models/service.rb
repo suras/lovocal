@@ -47,6 +47,7 @@ class Service
   validates :longitude, numericality: { greater_than: -180, less_than: 180 }
 
   accepts_nested_attributes_for :service_images
+  accepts_nested_attributes_for :service_timing
 
   def update_geo_location
     if latitude.present? && longitude.present?

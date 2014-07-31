@@ -1,0 +1,8 @@
+
+<h3>Services Chat</h3>
+<ul>
+	<% @services.each do |s|%>
+	  <li><i><%= link_to s.business_name, service_chats_path(s.id.to_s) %></i></li>
+	<% end %>
+</ul>
+

@@ -78,6 +78,8 @@ gem 'twilio-ruby', '~> 3.11'
 
 gem 'private_pub'
 
+gem 'rails_admin'
+
 
 group :development, :test do
   gem 'spring-commands-rspec'

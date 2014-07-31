@@ -11,9 +11,11 @@
       <%= subscribe_to "/messages/#{current_user.id.to_s}" %>
     <% end %>
     <script type="text/javascript">
+    console.log("<%=current_user.id.to_s%>");
     <%  if user_signed_in?  %>
       PrivatePub.subscribe("/messages/<%= current_user.id.to_s %>", function(data) {
-      $('<p></p>').html(data).appendTo('#chat-box');
+      console.log(data);
+      $('<div id="chat-box-item"></div>').html(data.chat.message).appendTo('#chat-box');
       });
    <% end %>
    </script>

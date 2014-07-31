@@ -97,6 +97,15 @@ class User
     false
   end
 
+  def chatted_services
+    chat_logs = self.user_chat_logs
+    services = Array.new
+    chat_logs.each do |c|
+      services << c.service
+    end
+    return services
+  end
+
   def name
     self.first_name
   end

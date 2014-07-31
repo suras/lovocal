@@ -1,0 +1,11 @@
+<br>
+<div class="col-md-6 col-md-offset-1">
+   <div id="chat-box">
+	<% @chats.each do |c| %>
+	  <div id="chat-box-item">
+	    <%= c.message %><br>
+	    &nbsp;<i><%= c.created_at %></i><br>
+	  </div>  
+	<% end %>
+	</div>
+</div>
