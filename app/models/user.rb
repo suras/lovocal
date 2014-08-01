@@ -118,8 +118,8 @@ class User
     client = Twilio::REST::Client.new account_sid, auth_token
     ss = client.account.messages.create(
         :from => '(847) 380-8587',
-        :to => '+919900431166',
-        :body => self.sms_serial_key
+        :to => self.mobile_number.to_s,
+        :body => self.sms_serial_key.to_s
      )
     self.sms_serial_key_sent_at = Time.now
     self.restrict_sms_sent_time = Time.now + 60.minutes
