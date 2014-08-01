@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "search", to: "search#search", as: :search
   get "/users/services/chats", to: "users#services_chat_list", as: :services_chat_list
   get "/users/services/:service_id/chats", to: "users#service_chats", as: :service_chats
+  post "/chat", to: "chat#send_message", as: :chats
   resources :listing_categories
   devise_for :users
 

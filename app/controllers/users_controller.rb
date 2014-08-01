@@ -151,6 +151,8 @@ class UsersController < ApplicationController
 
   # GET /users/services/:service_id/chats
   def service_chats
+    @service = Service.where(_id: params[:service_id]).first
+    @list_cat_id = @service.list_cat_ids[0]
     @chats = current_user.chats.where(service_id: params[:service_id]).asc(:created_at)
   end
 

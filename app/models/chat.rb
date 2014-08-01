@@ -127,4 +127,20 @@ class Chat
     end
   end
 
+
+  def self.chatter_details(obj, type)
+    if(type == "user")
+       if(obj.sender_type.downcase == "service") 
+          sender_name = Service.where(_id: obj.sender_id).first.try(:business_name)
+          entity = "other-chat"
+       else
+          sender_name = ""
+          entity = "my-chat"
+       end 
+       return {sender_name: sender_name, entity: entity} 
+    end
+    # pending service
+  end
+
+
 end
