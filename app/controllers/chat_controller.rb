@@ -4,6 +4,7 @@ class ChatController < ApplicationController
  # POST /chat
   def send_message
     ampq(params[:chat])
+    render json: {}
   end
 
   def ampq(params)
