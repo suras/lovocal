@@ -14,9 +14,7 @@
     <%  if user_signed_in?  %>
       PrivatePub.subscribe("/messages/<%= current_user.id.to_s %>", function(data) {
         console.log(data);
-        $('<div id="chat-box-item"></div>').html(data.chat.message).appendTo('#chat-box');
-        $("#chat_chat_id").val(data.chat.chat_id);
-        $("#chat_sent_time").val("2014-08-01T14:11:42+0530");
+        chat(data.chat);
       });
    <% end %>
    </script>
