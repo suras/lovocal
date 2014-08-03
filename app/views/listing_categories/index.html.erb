@@ -6,7 +6,8 @@
           <div class="table">
               <div class="table-cell">
                   <%= raw get_image(cat) %>
-                  <center><a href="<%=search_url(:"search[listing_category]" => cat.name)%>"><%= cat.name %></a></center>
+                  <center><a href="<%=search_url(:"search[listing_category]" => cat.name)%>"><%= cat.name %></a></center><br>
+                    <%= link_to "Send Query", new_multi_chat_path(cat.id.to_s),class: "btn btn-warning btn-sm"%>
               </div>
           </div>
       </div>

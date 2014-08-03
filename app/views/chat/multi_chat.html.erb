@@ -1,0 +1,20 @@
+<div class="col-md-6 col-md-offset-1">
+  <div id="chat-form">
+  <div id="notice"></div>
+  <%= form_tag multi_chat_path, remote: true do  %>
+    <div class="field">
+      <%= label_tag :"Message" %><br>
+      <%= text_field_tag "chat[message]" %>
+      <%= hidden_field_tag "chat[user_id]", current_user.id.to_s %>
+      <%= hidden_field_tag "chat[latitude]", "12.9667" %>
+      <%= hidden_field_tag "chat[longitude]", "77.5667" %>
+      <%= hidden_field_tag "chat[sent_time]", "2014-08-01T14:11:42+0530" %>
+      <%= hidden_field_tag "chat[chat_id]", ""%>
+      <%= hidden_field_tag "chat[list_cat_id]", @category_id %>
+    </div><br>
+    <div class="actions">
+      <%= submit_tag(:send) %>
+    </div>
+  <% end %>
+  </div>
+</div>

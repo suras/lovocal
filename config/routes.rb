@@ -10,8 +10,10 @@ Rails.application.routes.draw do
   put "users/:id", to: "users#update"
   get "users/:id", to: "users#edit"
   get "search", to: "search#search", as: :search
-  get "/users/services/chats", to: "users#services_chat_list", as: :services_chat_list
-  get "/users/services/:service_id/chats", to: "users#service_chats", as: :service_chats
+  get "/users/services/chats", to: "chat#services_chat_list", as: :services_chat_list
+  get "/users/services/:service_id/chats", to: "chat#service_chats", as: :service_chats
+  get  "/users/multi_chat/:category_id", to: "chat#multi_chat", as: :new_multi_chat
+  post "/users/multi_chat/", to:"chat#send_multiple_chats", as: :multi_chat
   post "/chat", to: "chat#send_message", as: :chats
   resources :listing_categories
   devise_for :users

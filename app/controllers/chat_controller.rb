@@ -83,7 +83,9 @@ class ChatController < ApplicationController
       @user_chat_query.user_id = current_user.id
       @user_chat_query.save      
       send_service_messages
-      render json: {}
+      respond_to do |format|
+        format.js {render "multi_chat"}
+      end
     end
   end
 
@@ -119,6 +121,28 @@ class ChatController < ApplicationController
     render json: {}
   rescue => e
      render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
+  end
+
+
+  # GET /users/services/chats
+  def services_chat_list
+    @services = current_user.chatted_services
+  end
+
+  # GET /users/services/:service_id/chats
+  def service_chats
+    @service = Service.where(_id: params[:service_id]).first
+    @list_cat_id = @service.list_cat_ids[0]
+    @chats = current_user.chats.where(service_id: params[:service_id]).asc(:created_at)
+  end
+
+  def multi_chat
+    @category=  ListingCategory.where(_id: params[:category_id]).first
+    if(@category.present?)
+      @category_id = @category.id.to_s
+    else
+      @category_id = nil
+    end
   end
 
   # POST /chat/acknowledge

@@ -144,19 +144,6 @@ class UsersController < ApplicationController
     render json: @services, root: :services
   end
 
-  # GET /users/services/chats
-  def services_chat_list
-    @services = current_user.chatted_services
-  end
-
-  # GET /users/services/:service_id/chats
-  def service_chats
-    @service = Service.where(_id: params[:service_id]).first
-    @list_cat_id = @service.list_cat_ids[0]
-    @chats = current_user.chats.where(service_id: params[:service_id]).asc(:created_at)
-  end
-
-
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
