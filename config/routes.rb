@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       post '/chat', to: "chat#send_message"
       post '/multiple_chats', to: "chat#send_multiple_chats"
       get  '/services/:id/rating', to: "services#rating"
+      post '/referral', to: 'users#register_referral'
       resources :users
       resources :listing_categories
       resources :services do

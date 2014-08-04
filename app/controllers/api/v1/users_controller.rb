@@ -53,6 +53,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if(@user.present?)
       @user.is_verified_by_sms = true
       @user.auth_token = ""
+      @user.restrict_sms_count = 0
       @user.encrypted_phone_id = params[:user][:phone_id]
       @user.save
       render json: @user, serializer: UserAuthSerializer, root: "user"
@@ -115,6 +116,14 @@ class Api::V1::UsersController < Api::V1::BaseController
   def get_key
     user = User.where(mobile_number: params[:mobile_number]).first
     render json: user.to_json
+  end
+
+  # POST /referral
+  def register_referral
+    User.register_referral(params[:referral_id], params[:device_id])
+    render json: {}
+  rescue => e
+    render json: {error_code: Code[:error_rescue], error_message: e.message}, status: Code[:status_error]
   end
 
   private

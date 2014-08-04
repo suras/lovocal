@@ -22,7 +22,8 @@ class User
   field :total_sms_sent,             type: Integer, default: 0
   field :restrict_sms_count,         type: Integer, default: 0
   field :encrypted_password,         type: String, default: ""
-
+  field :device_id,                  type: String
+  field :share_token                 type: String
   ## Recoverable
   # field :reset_password_token,   type: String
   # field :reset_password_sent_at, type: Time
@@ -49,6 +50,7 @@ class User
   # field :locked_at,       type: Time
   
   before_save :ensure_authentication_token, :mobile_verification_serial
+  before_create :ensure_share_token
   before_validation :ensure_password
 
   has_many :services
@@ -57,6 +59,7 @@ class User
   has_many :service_ratings
   has_many :chat_queries
   has_many :chats
+  has_many :user_shares
   
   validates :mobile_number, presence: true,
                       numericality: true,
@@ -81,6 +84,11 @@ class User
   def ensure_password
     return if self.password.present?
     self.password = SecureRandom.random_number(8888888888)
+  end
+
+  def ensure_share_token
+    return if share_token.present?
+    self.share_token = Devise.friendly_token
   end
 
   def image_url
@@ -130,7 +138,7 @@ class User
 
   def sms_limit_check
    return true unless self.restrict_sms_sent_time
-    if(self.restrict_sms_sent_time < Time.now  && self.restrict_sms_count < 3)
+    if(self.restrict_sms_sent_time < Time.now  || self.restrict_sms_count < 3)
      true
     else
     false
@@ -146,6 +154,13 @@ class User
     record = to_adapter.get(key[0]['$oid'])
     record if record && record.authenticatable_salt == salt
   end
+
+
+  def self.register_referral(referral_id, device_id)
+    user = self.where(share_token: referral_id).first
+    raise "no user found for given share token" unless user.present?
+    UserShare.where(user_id: user.id, device_id: device_id).first_or_create!
+  end 
 
   private
     def generate_authentication_token
