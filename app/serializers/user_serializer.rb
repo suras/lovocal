@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :mobile_number, :first_name, :last_name, :email,
-             :image_url, :description, :mobile_number, :share_token 
+             :image_url, :description, :mobile_number, :share_token, :share_count 
 
   def image_url
     object.image_url
@@ -8,6 +8,10 @@ class UserSerializer < ActiveModel::Serializer
 
   def id
   	object.id.to_s
+  end
+
+  def share_count
+    object.user_shares.count
   end
 
 end

@@ -1,4 +1,4 @@
-class PublicController < ApplicationController
+class Api::V1::PublicController < Api::V1::BaseController
   
   def index
   

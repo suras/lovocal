@@ -26,7 +26,7 @@ class Chat
        no_error = false
        params[:message] = can_send_chat[:message]
      end
-    return  {message: params[:message], chat_id: chat_id,sender_obj: chat[:sender_obj], 
+    return  { message: params[:message], chat_id: chat_id,sender_obj: chat[:sender_obj], 
             receiver_obj: chat[:receiver_obj], no_error: no_error,
             chat_query_id: chat[:chat_query_id], chat_query_message: chat[:chat_query_message] }  
   end

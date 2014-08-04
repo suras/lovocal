@@ -10,4 +10,8 @@ class ServiceImage
 
   mount_uploader :image, ProfileImageUploader
 
+  def image_url
+    Rails.application.secrets.app_url+self.image.url
+  end
+
 end

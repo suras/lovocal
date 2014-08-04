@@ -6,7 +6,7 @@ class ServiceImageSerializer < ActiveModel::Serializer
   end
 
   def image_url
-    Rails.application.secrets.app_url+object.image.url
+    object.image_url
   end
   
 end
