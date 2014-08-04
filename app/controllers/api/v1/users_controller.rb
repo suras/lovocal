@@ -131,10 +131,10 @@ class Api::V1::UsersController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, 
-        :image, :description)
+        :image, :description, :device_id)
     end
 
     def user_create_params
-      params.require(:user).permit(:mobile_number)
+      params.require(:user).permit(:mobile_number, :device_id)
     end
 end
