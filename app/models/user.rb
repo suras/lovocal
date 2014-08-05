@@ -24,6 +24,7 @@ class User
   field :encrypted_password,         type: String, default: ""
   field :device_id,                  type: String
   field :share_token,                type: String
+  field :is_admin,                   type: Boolean, default: false 
   ## Recoverable
   # field :reset_password_token,   type: String
   # field :reset_password_sent_at, type: Time

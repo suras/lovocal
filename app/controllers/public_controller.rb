@@ -7,7 +7,7 @@ class PublicController < ApplicationController
   # GET /banners
   def banners
     @banners = Banner.all.desc(:priority)
-    render json: @banners
+    render json: @banners, root: :banners
   end
 
 end

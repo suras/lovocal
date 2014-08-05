@@ -7,7 +7,7 @@ class Banner
   mount_uploader :image, ProfileImageUploader
   
   def image_url
-    Rails.application.secrets.app_url+object.image.url
+    Rails.application.secrets.app_url+self.image.url
   end
 
 end

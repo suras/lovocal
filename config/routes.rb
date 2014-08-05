@@ -2,11 +2,13 @@ Rails.application.routes.draw do
   
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   root to: "public#index"
+
   post 'users/login', to: "users#create_login", as: :user_login
   get 'users/login/new', to: "users#new_login", as: :new_user_login
   post 'users/create_password', to: "users#create_password", as: :create_user_password
   get "users/new", to: "users#new", as: :new_user
   post "users", to: "users#create", as: :users
+  get "users/sign_in", to: "users#new_login"
   put "users/:id", to: "users#update"
   get "users/:id", to: "users#edit"
   get "search", to: "search#search", as: :search
@@ -16,8 +18,9 @@ Rails.application.routes.draw do
   post "/users/multi_chat/", to:"chat#send_multiple_chats", as: :multi_chat
   post "/chat", to: "chat#send_message", as: :chats
   get "/banners", to: "public#banners"
-  resources :listing_categories
   devise_for :users
+
+  resources :listing_categories
 
 
   namespace :api do

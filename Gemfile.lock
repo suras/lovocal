@@ -47,7 +47,7 @@ GEM
     bson (2.3.0)
     bson_ext (1.5.1)
     builder (3.2.2)
-    cancan (1.6.10)
+    cancancan (1.9.1)
     capistrano (3.0.1)
       i18n
       rake (>= 10.0.0)
@@ -331,7 +331,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   bson_ext
-  cancan
+  cancancan (~> 1.9)
   capistrano (~> 3.0.0)
   capistrano-bundler (~> 1.0.0)
   capistrano-rails (~> 1.0.0)
